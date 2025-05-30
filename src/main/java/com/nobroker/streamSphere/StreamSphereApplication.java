@@ -9,4 +9,5 @@ public class StreamSphereApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(StreamSphereApplication.class, args);
 	}
+
 }
