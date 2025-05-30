@@ -1,4 +1,4 @@
-package com.nobroker.streamSphere.repo;
+package com.nobroker.streamSphere.repositories;
 
 import com.nobroker.streamSphere.models.Watchlist;
 import io.lettuce.core.dynamic.annotation.Param;
