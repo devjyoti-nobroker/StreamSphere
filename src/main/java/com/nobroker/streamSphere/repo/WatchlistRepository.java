@@ -12,7 +12,7 @@ import java.util.List;
 public interface WatchlistRepository extends JpaRepository<Watchlist, Long> {
 
     //Finds all watchlist entries (only movie ids) for a given profile in descending order of addedAt timestamp
-    @Query("SELECT w.movieId FROM Watchlist w WHERE w.profileId = :profileId ORDER BY w.timestamp DESC")
+    @Query("SELECT w.movieId FROM Watchlist w WHERE w.profileId = :profileId ORDER BY w.addedAt DESC")
     List<Long> findMovieIdsByProfileId(@Param("profileId") Long profileId);
 
     //Checks if a particular movie is already in the user's watchlist (to avoid duplicates)
