@@ -2,6 +2,7 @@ package com.nobroker.streamSphere.services;
 
 import com.nobroker.streamSphere.dtos.CreateProfileDTO;
 import com.nobroker.streamSphere.dtos.CreateProfileResponseDTO;
+import com.nobroker.streamSphere.dtos.FindAllProfilesDTO;
 import com.nobroker.streamSphere.mappers.ProfileMapper;
 import com.nobroker.streamSphere.models.Account;
 import com.nobroker.streamSphere.models.Profile;
@@ -28,7 +29,8 @@ public class ProfileServices {
     @Transactional
     public CreateProfileResponseDTO save(CreateProfileDTO createProfileDTO){
 
-        Long accountId = 1L;
+//        accountId we will get from JWT token
+        Long accountId = null;
 
         Account account = accountRepo.getReferenceById(accountId);
         Profile mappedProfile = profileMapper.toProfile(createProfileDTO);
@@ -38,6 +40,19 @@ public class ProfileServices {
         CreateProfileResponseDTO createProfileResponseDTO = profileMapper.toCreateProfileResponse(dbProfile);
 
         return createProfileResponseDTO;
+    }
+
+    public List<FindAllProfilesDTO> getAll(){
+
+        //        accountId we will get from by JWT token
+        Long accountId = null;
+
+        List<Profile> dbProfiles = profileRepo.findByAccountId(accountId);
+
+        return dbProfiles
+                .stream()
+                .map(profiles -> profileMapper.toFindAllProfile(profiles))
+                .toList();
     }
 
 }

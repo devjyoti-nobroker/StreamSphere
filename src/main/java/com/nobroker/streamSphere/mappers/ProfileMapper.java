@@ -2,6 +2,7 @@ package com.nobroker.streamSphere.mappers;
 
 import com.nobroker.streamSphere.dtos.CreateProfileDTO;
 import com.nobroker.streamSphere.dtos.CreateProfileResponseDTO;
+import com.nobroker.streamSphere.dtos.FindAllProfilesDTO;
 import com.nobroker.streamSphere.models.Profile;
 import org.apache.catalina.mapper.Mapper;
 import org.springframework.stereotype.Component;
@@ -33,5 +34,13 @@ public class ProfileMapper {
         return createProfileResponse;
     }
 
+    public FindAllProfilesDTO toFindAllProfile(Profile profile){
+        FindAllProfilesDTO findAllProfilesDTO = new FindAllProfilesDTO();
 
+        findAllProfilesDTO.setAdult(profile.isAdult());
+        findAllProfilesDTO.setId(profile.getId());
+        findAllProfilesDTO.setName(profile.getName());
+
+        return findAllProfilesDTO;
+    }
 }
