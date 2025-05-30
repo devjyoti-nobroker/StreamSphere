@@ -17,19 +17,19 @@ public class Profile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id", insertable = false, updatable = false, nullable = false)
-    private int id;
+    @Column(name="id")
+    private Long id;
 
-    @Column(nullable = false, name="name")
+    @Column(name="name")
     private String name;
 
-    @Column(nullable = false, name="adult")
+    @Column(name="adult")
     private boolean adult;
 
-    @Column(nullable = false, updatable = false, name = "created")
+    @Column(name = "created")
     private LocalDateTime created;
 
-    @Column(nullable = false, name = "last_updated")
+    @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
     @ManyToOne(fetch = FetchType.LAZY)
