@@ -1,9 +1,6 @@
 package com.nobroker.streamSphere.controllers;
 
-import com.nobroker.streamSphere.dtos.CreateProfileDTO;
-import com.nobroker.streamSphere.dtos.CreateProfileResponseDTO;
-import com.nobroker.streamSphere.dtos.FindAllProfilesDTO;
-import com.nobroker.streamSphere.models.Profile;
+import com.nobroker.streamSphere.dtos.ProfileDTO;
 import com.nobroker.streamSphere.services.ProfileServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +15,12 @@ public class ProfileController {
     private ProfileServices profileServices;
 
     @PostMapping("")
-    CreateProfileResponseDTO create(@RequestBody CreateProfileDTO createProfileDTO){
-        return profileServices.save(createProfileDTO);
+    ProfileDTO create(@RequestBody ProfileDTO profileDTO){
+        return profileServices.save(profileDTO);
     }
 
     @GetMapping("")
-    List<FindAllProfilesDTO> getAllProfiles(){
+    List<ProfileDTO> getAllProfiles(){
         return profileServices.getAll();
     }
 }
