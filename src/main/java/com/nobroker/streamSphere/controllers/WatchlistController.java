@@ -24,7 +24,7 @@ public class WatchlistController {
 
     // Get all movie IDs in watchlist
     @GetMapping("/{profileId}")
-    public ResponseEntity<List<Long>> getWatchlist(@PathVariable Long profileId) {
+    public ResponseEntity<List<Watchlist>> getWatchlist(@PathVariable Long profileId) {
         return ResponseEntity.ok(watchlistService.getWatchlistMovieIds(profileId));
     }
 
