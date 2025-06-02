@@ -12,7 +12,7 @@ public class ProfileMapper {
     public Profile toProfile(ProfileDTO profileDTO){
         Profile profile = new Profile();
         profile.setName(profileDTO.getName());
-        profile.setAdult(profileDTO.isAdult());
+        profile.setAdult(profileDTO.getAdult());
 
         return profile;
     }

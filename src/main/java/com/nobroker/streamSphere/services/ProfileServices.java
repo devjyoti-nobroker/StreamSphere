@@ -34,16 +34,6 @@ public class ProfileServices {
     }
 
     @Transactional
-    public void update(ProfileDTO profileDTO){
-        Profile updatedProfile = profileMapper.toProfile(profileDTO);
-
-        Profile dbProfile = profileRepo.getReferenceById(updatedProfile.getId());
-        updatedProfile.setCreated(dbProfile.getCreated());
-
-        profileRepo.save(updatedProfile);
-    }
-
-    @Transactional
     public ProfileDTO save(ProfileDTO profileDTO){
 
         Account account = accountRepo.getReferenceById(accountId);
@@ -58,6 +48,28 @@ public class ProfileServices {
         return dbProfileDTO;
     }
 
+    public ProfileDTO getProfile(Long profileId){
+        Profile dbProfile = profileRepo.getReferenceById(profileId);
+
+        ProfileDTO profileDTO = profileMapper.toProfileDTO(dbProfile);
+
+        return profileDTO;
+    }
+
+    @Transactional
+    public ProfileDTO updateProfileByProfileId(Long profileId, ProfileDTO profileDTO){
+        Profile dbProfile = profileRepo.getReferenceById(profileId);
+        if(profileDTO.getName() != null)
+            dbProfile.setName(profileDTO.getName());
+        if(profileDTO.getAdult() != null)
+            dbProfile.setAdult(profileDTO.getAdult());
+
+        profileRepo.save(dbProfile);
+
+        ProfileDTO updatedProfileDTO = profileMapper.toProfileDTO(dbProfile);
+        return updatedProfileDTO;
+    }
+
     public List<ProfileDTO> getAll(){
 
         List<Profile> dbProfiles = profileRepo.findByAccountId(accountId);
@@ -66,6 +78,10 @@ public class ProfileServices {
                 .stream()
                 .map(profiles -> profileMapper.toProfileDTO(profiles))
                 .toList();
+    }
+
+    public void deleteProfileById(Long profileId){
+        profileRepo.deleteById(profileId);
     }
 
 }

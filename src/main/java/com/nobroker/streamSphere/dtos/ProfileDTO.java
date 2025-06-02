@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProfileDTO {
 
-    private long id;
+    private Long id;
     private String name;
-    private boolean adult;
+    private Boolean adult;
 
 }
