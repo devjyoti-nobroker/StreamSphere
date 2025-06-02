@@ -13,7 +13,6 @@ DROP TABLE IF EXISTS profiles;
 DROP TABLE IF EXISTS accounts;
 DROP TABLE IF EXISTS home_config;
 
-
 -- Re-enable foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -50,7 +49,7 @@ CREATE TABLE movies (
     actors VARCHAR(255),
     created_at DATE,
     updated_at DATE,
-	updated_by BIGINT,
+	  updated_by BIGINT,
     FOREIGN KEY (updated_by) REFERENCES accounts(id)
 );
 
