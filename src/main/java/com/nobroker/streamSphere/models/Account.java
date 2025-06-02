@@ -38,7 +38,11 @@ public class Account {
 
     @PrePersist
     public void prePersist() {
-        this.lastUpdated = LocalDateTime.now();
+        this.created = this.lastUpdated = LocalDateTime.now();
     }
 
+    @PreUpdate
+    public void preUpdate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
 }

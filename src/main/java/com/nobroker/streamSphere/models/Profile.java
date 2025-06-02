@@ -38,6 +38,11 @@ public class Profile {
 
     @PrePersist
     public void prePersist() {
+        this.created = this.lastUpdated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
         this.lastUpdated = LocalDateTime.now();
     }
 }
