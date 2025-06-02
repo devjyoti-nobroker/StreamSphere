@@ -1,4 +1,4 @@
-package com.nobroker.streamSphere.repo;
+package com.nobroker.streamSphere.repositories;
 
 import com.nobroker.streamSphere.models.Movies;
 import org.springframework.data.jpa.repository.JpaRepository;

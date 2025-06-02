@@ -1,7 +1,7 @@
-package com.nobroker.streamSphere.service;
+package com.nobroker.streamSphere.services;
 
 import com.nobroker.streamSphere.models.Movies;
-import com.nobroker.streamSphere.repo.MoviesRepo;
+import com.nobroker.streamSphere.repositories.MoviesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

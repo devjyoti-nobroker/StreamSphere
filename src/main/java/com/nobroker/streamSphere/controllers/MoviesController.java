@@ -1,8 +1,8 @@
-package com.nobroker.streamSphere.contollers;
+package com.nobroker.streamSphere.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nobroker.streamSphere.models.Movies;
-import com.nobroker.streamSphere.service.MovieService;
+import com.nobroker.streamSphere.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
