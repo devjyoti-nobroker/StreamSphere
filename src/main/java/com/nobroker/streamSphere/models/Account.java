@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id;
 
@@ -36,4 +36,13 @@ public class Account {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
+    @PrePersist
+    public void prePersist() {
+        this.created = this.lastUpdated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
 }
