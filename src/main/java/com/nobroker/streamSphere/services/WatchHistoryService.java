@@ -3,7 +3,7 @@ package com.nobroker.streamSphere.services;
 import com.nobroker.streamSphere.models.Movies;
 import com.nobroker.streamSphere.models.Profile;
 import com.nobroker.streamSphere.models.WatchHistory;
-import com.nobroker.streamSphere.repositories.MovieRepository;
+import com.nobroker.streamSphere.repositories.MoviesRepo;
 import com.nobroker.streamSphere.repositories.ProfileRepo;
 import com.nobroker.streamSphere.repositories.WatchHistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class WatchHistoryService {
 
     private final WatchHistoryRepository watchHistoryRepository;
     private final ProfileRepo profileRepository;
-    private final MovieRepository movieRepository;
+    private final MoviesRepo movieRepository;
 
     // Add a movie to watch history
     public WatchHistory addToHistory(Long profileId, Long movieId) {

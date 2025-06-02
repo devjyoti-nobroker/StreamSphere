@@ -4,7 +4,7 @@ import com.nobroker.streamSphere.models.Movies;
 import com.nobroker.streamSphere.models.Profile;
 import com.nobroker.streamSphere.models.Watchlist;
 import com.nobroker.streamSphere.models.Watchlist.WatchListId;
-import com.nobroker.streamSphere.repositories.MovieRepository;
+import com.nobroker.streamSphere.repositories.MoviesRepo;
 import com.nobroker.streamSphere.repositories.ProfileRepo;
 import com.nobroker.streamSphere.repositories.WatchlistRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class WatchlistService {
 
     private final WatchlistRepository watchlistRepository;
     private final ProfileRepo profileRepository;
-    private final MovieRepository movieRepository;
+    private final MoviesRepo movieRepository;
 
     // Adds a movie to the watchlist if it's not already present
     public void addToWatchlist(Long profileId, Long movieId) {
