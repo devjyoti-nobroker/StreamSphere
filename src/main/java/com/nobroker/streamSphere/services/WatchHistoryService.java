@@ -1,9 +1,14 @@
 package com.nobroker.streamSphere.services;
 
+import com.nobroker.streamSphere.models.Movies;
+import com.nobroker.streamSphere.models.Profile;
 import com.nobroker.streamSphere.models.WatchHistory;
+import com.nobroker.streamSphere.repositories.MoviesRepo;
+import com.nobroker.streamSphere.repositories.ProfileRepo;
 import com.nobroker.streamSphere.repositories.WatchHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,17 +18,26 @@ import java.util.List;
 public class WatchHistoryService {
 
     private final WatchHistoryRepository watchHistoryRepository;
+    private final ProfileRepo profileRepository;
+    private final MoviesRepo movieRepository;
 
     // Add a movie to watch history
+    @Transactional
     public WatchHistory addToHistory(Long profileId, Long movieId) {
+        Profile profile = profileRepository.findById(profileId).orElseThrow();
+        Movies movie = movieRepository.findById(movieId).orElseThrow();
+
         // If it already exists, remove and re-add to update watchedAt
-        if (watchHistoryRepository.existsByProfileIdAndMovieId(profileId, movieId)) {
-            watchHistoryRepository.deleteByProfileIdAndMovieId(profileId, movieId);
+        if (watchHistoryRepository.existsByIdProfileIdAndIdMovieId(profileId, movieId)) {
+            watchHistoryRepository.deleteByIdProfileIdAndIdMovieId(profileId, movieId);
         }
 
+        WatchHistory.WatchHistoryId id = new WatchHistory.WatchHistoryId(profileId, movieId);
+
         WatchHistory history = WatchHistory.builder()
-                .profileId(profileId)
-                .movieId(movieId)
+                .id(id)
+                .profile(profile)
+                .movie(movie)
                 .watchedAt(LocalDateTime.now())
                 .build();
 
@@ -37,11 +51,12 @@ public class WatchHistoryService {
 
     // Check if a movie is in watch history
     public boolean isMovieWatched(Long profileId, Long movieId) {
-        return watchHistoryRepository.existsByProfileIdAndMovieId(profileId, movieId);
+        return watchHistoryRepository.existsByIdProfileIdAndIdMovieId(profileId, movieId);
     }
 
     // Remove a specific movie from watch history
+    @Transactional
     public void removeFromHistory(Long profileId, Long movieId) {
-        watchHistoryRepository.deleteByProfileIdAndMovieId(profileId, movieId);
+        watchHistoryRepository.deleteByIdProfileIdAndIdMovieId(profileId, movieId);
     }
 }
