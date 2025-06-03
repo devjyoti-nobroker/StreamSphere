@@ -44,8 +44,6 @@ CREATE TABLE movies (
     description VARCHAR(255),
     rating FLOAT,
     image VARCHAR(255),
-    image_type VARCHAR(255),
-    image_data MEDIUMBLOB,
     actors VARCHAR(255),
     created_at DATETIME,
     updated_at DATETIME,
