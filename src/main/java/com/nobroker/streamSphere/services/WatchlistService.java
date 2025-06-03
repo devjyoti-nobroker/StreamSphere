@@ -31,7 +31,7 @@ public class WatchlistService {
             if (!watchlistRepository.existsByIdProfileIdAndIdMovieId(profileId, movieId)) {
                 Profile profile = profileRepository.findById(profileId)
                         .orElseThrow(() -> new ProfileNotFoundException(profileId));
-                Movies movie = movieRepository.findById(movieId)
+                Movie movie = movieRepository.findById(movieId)
                         .orElseThrow(() -> new ProfileNotFoundException(movieId));
 
                 Watchlist entry = Watchlist.builder()

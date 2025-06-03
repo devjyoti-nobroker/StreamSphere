@@ -10,7 +10,7 @@ import java.util.List;
 public interface WatchlistRepository extends JpaRepository<Watchlist, Long> {
 
     //Finds all watchlist entries for a given profile in descending order of addedAt timestamp
-    List<Watchlist> findByProfileIdOrderByAddedAtDesc(Long profileId);
+    List<Watchlist> findByIdProfileIdOrderByAddedAtDesc(Long profileId);
 
     //Checks if a particular movie is already in the user's watchlist (to avoid duplicates)
     boolean existsByIdProfileIdAndIdMovieId(Long profileId, Long movieId);
@@ -23,5 +23,4 @@ public interface WatchlistRepository extends JpaRepository<Watchlist, Long> {
 
     //Clears the watchlist for a profile
     void deleteByIdProfileId(Long profileId);
-
 }
