@@ -145,6 +145,31 @@ INSERT INTO movie_genre (movie_id, genre) VALUES
 (5, 'Drama'),
 (5, 'Thriller');
 
+-- Assuming account IDs are 1, 2, 3 from previous inserts
+INSERT INTO profiles (name, adult, account_id, created, last_updated)
+VALUES
+('John Profile 1', false, 1, NOW(), NOW()),
+('John Profile 2', true, 1, NOW(), NOW()),
+('Jane Profile', false, 2, NOW(), NOW()),
+('Alice Profile', true, 3, NOW(), NOW());
+
+-- profile_id, movie_id, time_stamp
+INSERT INTO watch_list (profile_id, movie_id, time_stamp)
+VALUES
+(1, 1, NOW()),  -- John Profile 1 added Inception
+(1, 2, NOW()),  -- John Profile 1 added The Matrix
+(2, 2, NOW()),  -- John Profile 2 added The Matrix
+(3, 1, NOW());  -- Jane Profile added Inception
+
+-- profile_id, movie_id, time_stamp
+INSERT INTO watch_history (profile_id, movie_id, time_stamp)
+VALUES
+(1, 1, '2024-05-10 20:00:00'),  -- John Profile 1 watched Inception
+(1, 2, '2024-05-11 21:00:00'),  -- John Profile 1 watched The Matrix
+(2, 2, '2024-05-12 19:30:00'),  -- John Profile 2 watched The Matrix
+(3, 1, '2024-05-13 22:00:00');  -- Jane Profile watched Inception
+
+
 
 
 SELECT * FROM movies;

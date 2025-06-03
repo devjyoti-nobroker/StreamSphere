@@ -1,7 +1,9 @@
 package com.nobroker.streamSphere.repositories;
 
 import com.nobroker.streamSphere.models.WatchHistory;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,9 +15,10 @@ public interface WatchHistoryRepository extends JpaRepository<WatchHistory, Long
     List<WatchHistory> findByProfileIdOrderByWatchedAtDesc(Long profileId);
 
     //Find if a movie was already watched by a profile
-    boolean existsByProfileIdAndMovieId(Long profileId, Long movieId);
+    boolean existsByIdProfileIdAndIdMovieId(Long profileId, Long movieId);
 
     //Delete watch history for a specific movie of a profile
-    void deleteByProfileIdAndMovieId(Long profileId, Long movieId);
+    void deleteByIdProfileIdAndIdMovieId(Long profileId, Long movieId);
+
 
 }

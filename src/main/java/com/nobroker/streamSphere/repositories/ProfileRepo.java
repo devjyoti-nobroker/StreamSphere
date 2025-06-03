@@ -12,4 +12,6 @@ import java.util.List;
 @Repository
 public interface ProfileRepo extends JpaRepository<Profile, Long> {
     List<Profile> findByAccountId(Long accountId);
+
+    long countByAccountId(Long accountId);
 }
