@@ -18,7 +18,6 @@ public class StreamSphereApplication {
 		poke.setRating(4.66F);
 		poke.setMovieId(2324432132342L);
 		poke.setMovieName("sammy movie");
-		poke.setImageType("2143ed33r43d31d134r5");
 		poke.setMoviePoster("2143ed33r43d31d134r5");
 		poke.setCreatedAt(new Date());
 		poke.setUpdatedAt(new Date());
