@@ -1,12 +1,14 @@
 package com.nobroker.streamSphere.models;
 
 
+import co.elastic.clients.util.DateTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -43,10 +45,22 @@ public class Movies {
 
 
     @Column(name="created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name="updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
+
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = this.updatedAt = LocalDateTime.now();
+    }
+
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
     @Column(name="updated_by")
     private Long updatedBy;

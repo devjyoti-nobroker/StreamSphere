@@ -40,16 +40,16 @@ CREATE TABLE movies (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     released DATE,
-    runtime FLOAT,
+    runtime VARCHAR(255),
     description VARCHAR(255),
     rating FLOAT,
     image VARCHAR(255),
     image_type VARCHAR(255),
     image_data MEDIUMBLOB,
     actors VARCHAR(255),
-    created_at DATE,
-    updated_at DATE,
-	  updated_by BIGINT,
+    created_at DATETIME,
+    updated_at DATETIME,
+	updated_by BIGINT,
     FOREIGN KEY (updated_by) REFERENCES accounts(id)
 );
 
@@ -89,61 +89,61 @@ VALUES
 ('jane.smith@example.com', 'Jane Smith', 'hashed_pw_2', 1, NOW(), NOW()),
 ('alice.wong@example.com', 'Alice Wong', 'hashed_pw_3', 0, NOW(), NOW());
 
-INSERT INTO movies (
-    title, released, runtime, description, rating,
-    image, image_type, image_data,
-    actors, created_at, updated_at, updated_by
-)
-VALUES
-('Inception', '2010-07-16', 148, 'A thief who steals corporate secrets through dream-sharing technology is given an inverse task.', 8.8,
- 'inception.jpg', 'image/jpeg', NULL,
- 'Leonardo DiCaprio, Joseph Gordon-Levitt', CURDATE(), CURDATE(), 1),
+-- INSERT INTO movies (
+--     title, released, runtime, description, rating,
+--     image, image_type, image_data,
+--     actors, created_at, updated_at, updated_by
+-- )
+-- VALUES
+-- ('Inception', '2010-07-16', '2hr 37mins' , 'A thief who steals corporate secrets through dream-sharing technology is given an inverse task.', 8.8,
+--  'inception.jpg', 'image/jpeg', NULL,
+--  'Leonardo DiCaprio, Joseph Gordon-Levitt', CURDATE(), CURDATE(), 1),
 
-('The Matrix', '1999-03-31', 136, 'A computer hacker learns about the true nature of reality and his role in the war against its controllers.', 8.7,
- 'matrix.jpg', 'image/jpeg', NULL,
- 'Keanu Reeves, Laurence Fishburne', CURDATE(), CURDATE(), 2),
+-- ('The Matrix', '1999-03-31', '2hr 5mins' , 'A computer hacker learns about the true nature of reality and his role in the war against its controllers.', 8.7,
+--  'matrix.jpg', 'image/jpeg', NULL,
+--  'Keanu Reeves, Laurence Fishburne', CURDATE(), CURDATE(), 2),
 
-('Interstellar', '2014-11-07', 169, 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity’s survival.', 8.6,
- 'interstellar.jpg', 'image/jpeg', NULL,
- 'Matthew McConaughey, Anne Hathaway', CURDATE(), CURDATE(), 1),
+-- ('Interstellar', '2014-11-07', '1hr 45mins' , 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity’s survival.', 8.6,
+--  'interstellar.jpg', 'image/jpeg', NULL,
+--  'Matthew McConaughey, Anne Hathaway', CURDATE(), CURDATE(), 1),
 
-('Parasite', '2019-05-30', 132, 'A poor family schemes to become employed by a wealthy family and infiltrate their household.', 8.6,
- 'parasite.jpg', 'image/jpeg', NULL,
- 'Kang-ho Song, Sun-kyun Lee', CURDATE(), CURDATE(), 3),
+-- ('Parasite', '2019-05-30', '1hr 49mins' , 'A poor family schemes to become employed by a wealthy family and infiltrate their household.', 8.6,
+--  'parasite.jpg', 'image/jpeg', NULL,
+--  'Kang-ho Song, Sun-kyun Lee', CURDATE(), CURDATE(), 3),
 
-('The Dark Knight', '2008-07-18', 152, 'Batman faces the Joker, a criminal mastermind who plunges Gotham into anarchy.', 9.0,
- 'dark_knight.jpg', 'image/jpeg', NULL,
- 'Christian Bale, Heath Ledger', CURDATE(), CURDATE(), 2);
+-- ('The Dark Knight', '2008-07-18', '3hr 12mins' , 'Batman faces the Joker, a criminal mastermind who plunges Gotham into anarchy.', 9.0,
+--  'dark_knight.jpg', 'image/jpeg', NULL,
+--  'Christian Bale, Heath Ledger', CURDATE(), CURDATE(), 2);
 
 
 -- Inception
-INSERT INTO movie_genre (movie_id, genre) VALUES
-(1, 'Sci-Fi'),
-(1, 'Action'),
-(1, 'Thriller');
+-- INSERT INTO movie_genre (movie_id, genre) VALUES
+-- (1, 'Sci-Fi'),
+-- (1, 'Action'),
+-- (1, 'Thriller');
 
 -- The Matrix
-INSERT INTO movie_genre (movie_id, genre) VALUES
-(2, 'Sci-Fi'),
-(2, 'Action');
+-- INSERT INTO movie_genre (movie_id, genre) VALUES
+-- (2, 'Sci-Fi'),
+-- (2, 'Action');
 
 -- Interstellar
-INSERT INTO movie_genre (movie_id, genre) VALUES
-(3, 'Sci-Fi'),
-(3, 'Drama'),
-(3, 'Adventure');
+-- INSERT INTO movie_genre (movie_id, genre) VALUES
+-- (3, 'Sci-Fi'),
+-- (3, 'Drama'),
+-- (3, 'Adventure');
 
 -- Parasite
-INSERT INTO movie_genre (movie_id, genre) VALUES
-(4, 'Drama'),
-(4, 'Thriller');
+-- INSERT INTO movie_genre (movie_id, genre) VALUES
+-- (4, 'Drama'),
+-- (4, 'Thriller');
 
 -- The Dark Knight
-INSERT INTO movie_genre (movie_id, genre) VALUES
-(5, 'Action'),
-(5, 'Crime'),
-(5, 'Drama'),
-(5, 'Thriller');
+-- INSERT INTO movie_genre (movie_id, genre) VALUES
+-- (5, 'Action'),
+-- (5, 'Crime'),
+-- (5, 'Drama'),
+-- (5, 'Thriller');
 
 -- Assuming account IDs are 1, 2, 3 from previous inserts
 INSERT INTO profiles (name, adult, account_id, created, last_updated)
@@ -154,20 +154,20 @@ VALUES
 ('Alice Profile', true, 3, NOW(), NOW());
 
 -- profile_id, movie_id, time_stamp
-INSERT INTO watch_list (profile_id, movie_id, time_stamp)
-VALUES
-(1, 1, NOW()),  -- John Profile 1 added Inception
-(1, 2, NOW()),  -- John Profile 1 added The Matrix
-(2, 2, NOW()),  -- John Profile 2 added The Matrix
-(3, 1, NOW());  -- Jane Profile added Inception
+-- INSERT INTO watch_list (profile_id, movie_id, time_stamp)
+-- VALUES
+-- (1, 1, NOW()),  -- John Profile 1 added Inception
+-- (1, 2, NOW()),  -- John Profile 1 added The Matrix
+-- (2, 2, NOW()),  -- John Profile 2 added The Matrix
+-- (3, 1, NOW());  -- Jane Profile added Inception
 
 -- profile_id, movie_id, time_stamp
-INSERT INTO watch_history (profile_id, movie_id, time_stamp)
-VALUES
-(1, 1, '2024-05-10 20:00:00'),  -- John Profile 1 watched Inception
-(1, 2, '2024-05-11 21:00:00'),  -- John Profile 1 watched The Matrix
-(2, 2, '2024-05-12 19:30:00'),  -- John Profile 2 watched The Matrix
-(3, 1, '2024-05-13 22:00:00');  -- Jane Profile watched Inception
+-- INSERT INTO watch_history (profile_id, movie_id, time_stamp)
+-- VALUES
+-- (1, 1, '2024-05-10 20:00:00'),  -- John Profile 1 watched Inception
+-- (1, 2, '2024-05-11 21:00:00'),  -- John Profile 1 watched The Matrix
+-- (2, 2, '2024-05-12 19:30:00'),  -- John Profile 2 watched The Matrix
+-- (3, 1, '2024-05-13 22:00:00');  -- Jane Profile watched Inception
 
 
 

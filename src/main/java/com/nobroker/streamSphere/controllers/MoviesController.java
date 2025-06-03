@@ -35,6 +35,8 @@ public class MoviesController {
 
 
 
+    // To display all the movies (unsorted) (might be redundant)
+
     @GetMapping("/movies")
     public ResponseEntity<?> getMovies() {
         try {
@@ -50,10 +52,15 @@ public class MoviesController {
     }
 
 
+    //Get a particular movie by the id
 
     @GetMapping("/movies/{id}")
     public ResponseEntity<?> getMovieById(@PathVariable Long id) {
         try {
+
+            //Optional ds is mainly used in case we don't have a movie with the id,it returns NULL
+
+
             Optional<Movies> movie = movieService.getMovieById(id);
             if (movie.isPresent()) {
                 return ResponseEntity.ok(movie.get());
@@ -68,6 +75,7 @@ public class MoviesController {
     }
 
 
+    // Sorted the movies according to release date ascending (redundant)
 
     @GetMapping("/movies/sort/releaseDate/asc")
     public ResponseEntity<?> getMoviesSortedByReleaseDateAsc() {
@@ -81,6 +89,7 @@ public class MoviesController {
     }
 
 
+    // Sorted the movies according to release date descending
 
     @GetMapping("/movies/sort/releaseDate/desc")
     public ResponseEntity<?> getMoviesSortedByReleaseDateDesc() {
@@ -93,6 +102,9 @@ public class MoviesController {
         }
     }
 
+
+    // Sorted the movies according to rating ascending (redundant)
+
     @GetMapping("/movies/sort/rating/asc")
     public ResponseEntity<?> getMoviesSortedByRatingAsc() {
         try{
@@ -104,6 +116,7 @@ public class MoviesController {
         }
     }
 
+    // Sorted the movies according to rating descending
 
     @GetMapping("/movies/sort/rating/desc")
     public ResponseEntity<?>getMoviesSortedByRatingDesc() {
@@ -117,6 +130,13 @@ public class MoviesController {
     }
 
 
+
+    //Here we post the movie.
+    //We initially gat the entire movie object along with genre
+    //we get it inform of a dto
+    //we first save the movie data
+    //The id we get is then used to save the genres
+
     @PostMapping("/movies")
     public ResponseEntity<?> addMovie(@RequestBody MovieRequestDTO movieRequest) {
         try {
@@ -129,8 +149,6 @@ public class MoviesController {
             movie.setRating(movieRequest.getRating());
             movie.setActorList(movieRequest.getActorList());
             movie.setMoviePoster(movieRequest.getMoviePoster());
-            movie.setCreatedAt(new Date());
-            movie.setUpdatedAt(new Date());
             movie.setUpdatedBy(movieRequest.getUpdatedBy());
 
 
@@ -150,7 +168,11 @@ public class MoviesController {
 
 
 
-
+    //Similar to post
+    //If any entity is empty then the earlier value is put here
+    //In case the genre array is empty the previous one is kept
+    //Else first the initial genres are deleted
+    //Then new ones are added
 
     @PutMapping("/movies/{id}")
     public ResponseEntity<?> updateMovie(@PathVariable Long id,
@@ -170,6 +192,9 @@ public class MoviesController {
         }
     }
 
+    //Delete the movie object
+    //First delete the genres to resolve FK constraint
+    //Then delete the movieID
 
     @DeleteMapping("/movies/{id}")
     public ResponseEntity<?> deleteMovie(@PathVariable Long id) {

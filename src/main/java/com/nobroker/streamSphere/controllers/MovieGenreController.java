@@ -21,10 +21,16 @@ public class MovieGenreController {
     private MovieGenreService genreService;
 
 
+
+    //Gets all the movies for a particular genre
+
     @GetMapping("/movies/genre/{genre}")
     public ResponseEntity<?> getMovieCardsByGenre(@PathVariable String genre) {
 
         try {
+
+
+            //Cards are mainly used to return those fields that are useful to show
 
             List<MovieCardProjection> cards = genreService.getMovieCardsByGenre(genre);
             System.out.println(cards.size());
@@ -39,6 +45,9 @@ public class MovieGenreController {
         }
     }
 
+
+
+    //Return all the genres of a particular movie
 
     @GetMapping("/movies/{movieId}/genres")
     public ResponseEntity<?> getGenresForMovie(@PathVariable Long movieId) {
