@@ -1,7 +1,6 @@
 package com.nobroker.streamSphere.repositories;
 
 import com.nobroker.streamSphere.models.MovieGenre;
-import com.nobroker.streamSphere.models.Movies;
 import com.nobroker.streamSphere.projection.MovieCardProjection;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;

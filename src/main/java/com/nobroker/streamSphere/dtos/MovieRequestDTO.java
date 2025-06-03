@@ -16,7 +16,7 @@ public class MovieRequestDTO {
     private String runTime;
     private String description;
     private float rating;
-    private String actorList;
+    private List<String> actorList;
     private String moviePoster;
     private Date createdAt;
     private Date updatedAt;

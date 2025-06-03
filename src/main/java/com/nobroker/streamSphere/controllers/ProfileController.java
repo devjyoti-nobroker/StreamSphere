@@ -1,7 +1,7 @@
 package com.nobroker.streamSphere.controllers;
 
 import com.nobroker.streamSphere.dtos.ProfileDTO;
-import com.nobroker.streamSphere.services.ProfileServices;
+import com.nobroker.streamSphere.services.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,7 @@ import java.util.List;
 public class ProfileController {
 
     @Autowired
-    private ProfileServices profileServices;
+    private ProfileService profileServices;
 
     @PostMapping("")
     public ResponseEntity<ProfileDTO> create(@RequestBody ProfileDTO profileDTO){

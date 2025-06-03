@@ -28,7 +28,7 @@ public class Watchlist {
     @MapsId("movieId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id", nullable = false)
-    private Movies movie;
+    private Movie movie;
 
     @PrePersist
     public void prePersist() {

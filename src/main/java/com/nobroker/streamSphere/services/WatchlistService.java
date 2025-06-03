@@ -3,7 +3,7 @@ package com.nobroker.streamSphere.services;
 import com.nobroker.streamSphere.dtos.WatchlistDTO;
 import com.nobroker.streamSphere.exception.ProfileNotFoundException;
 import com.nobroker.streamSphere.exception.ServiceException;
-import com.nobroker.streamSphere.models.Movies;
+import com.nobroker.streamSphere.models.Movie;
 import com.nobroker.streamSphere.models.Profile;
 import com.nobroker.streamSphere.models.Watchlist;
 import com.nobroker.streamSphere.models.Watchlist.WatchListId;
@@ -31,7 +31,7 @@ public class WatchlistService {
             if (!watchlistRepository.existsByIdProfileIdAndIdMovieId(profileId, movieId)) {
                 Profile profile = profileRepository.findById(profileId)
                         .orElseThrow(() -> new ProfileNotFoundException(profileId));
-                Movies movie = movieRepository.findById(movieId)
+                Movie movie = movieRepository.findById(movieId)
                         .orElseThrow(() -> new ProfileNotFoundException(movieId));
 
                 Watchlist entry = Watchlist.builder()

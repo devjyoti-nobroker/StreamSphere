@@ -1,20 +1,15 @@
 package com.nobroker.streamSphere.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nobroker.streamSphere.dtos.MovieRequestDTO;
-import com.nobroker.streamSphere.models.MovieGenre;
-import com.nobroker.streamSphere.models.Movies;
+import com.nobroker.streamSphere.models.Movie;
 import com.nobroker.streamSphere.repositories.MovieGenreRepo;
 import com.nobroker.streamSphere.services.MovieGenreService;
 import com.nobroker.streamSphere.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +36,7 @@ public class MoviesController {
     public ResponseEntity<?> getMovies() {
         try {
             // Ok
-            List<Movies> movies = movieService.getAllMovies();
+            List<Movie> movies = movieService.getAllMovies();
             return ResponseEntity.ok(movies);
 
         } catch (Exception e) {
@@ -61,7 +56,7 @@ public class MoviesController {
             //Optional ds is mainly used in case we don't have a movie with the id,it returns NULL
 
 
-            Optional<Movies> movie = movieService.getMovieById(id);
+            Optional<Movie> movie = movieService.getMovieById(id);
             if (movie.isPresent()) {
                 return ResponseEntity.ok(movie.get());
             } else {
@@ -80,7 +75,7 @@ public class MoviesController {
     @GetMapping("/movies/sort/releaseDate/asc")
     public ResponseEntity<?> getMoviesSortedByReleaseDateAsc() {
         try {
-            List<Movies> movies = movieService.getMoviesSortedByReleaseDateAsc();
+            List<Movie> movies = movieService.getMoviesSortedByReleaseDateAsc();
             return ResponseEntity.ok(movies);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -94,7 +89,7 @@ public class MoviesController {
     @GetMapping("/movies/sort/releaseDate/desc")
     public ResponseEntity<?> getMoviesSortedByReleaseDateDesc() {
         try {
-            List<Movies> movies = movieService.getMoviesSortedByReleaseDateDesc();
+            List<Movie> movies = movieService.getMoviesSortedByReleaseDateDesc();
             return ResponseEntity.ok(movies);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -108,7 +103,7 @@ public class MoviesController {
     @GetMapping("/movies/sort/rating/asc")
     public ResponseEntity<?> getMoviesSortedByRatingAsc() {
         try{
-            List<Movies> movies = movieService.getMoviesSortedByRatingAsc();
+            List<Movie> movies = movieService.getMoviesSortedByRatingAsc();
             return ResponseEntity.ok(movies);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -121,7 +116,7 @@ public class MoviesController {
     @GetMapping("/movies/sort/rating/desc")
     public ResponseEntity<?>getMoviesSortedByRatingDesc() {
         try {
-            List <Movies> movies = movieService.getMoviesSortedByRatingDesc();
+            List <Movie> movies = movieService.getMoviesSortedByRatingDesc();
             return ResponseEntity.ok(movies);
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -139,31 +134,7 @@ public class MoviesController {
 
     @PostMapping("/movies")
     public ResponseEntity<?> addMovie(@RequestBody MovieRequestDTO movieRequest) {
-        try {
-            // 1. Convert DTO to Movies entity
-            Movies movie = new Movies();
-            movie.setMovieName(movieRequest.getMovieName());
-            movie.setReleaseDate(movieRequest.getReleaseDate());
-            movie.setRunTime(movieRequest.getRunTime());
-            movie.setDescription(movieRequest.getDescription());
-            movie.setRating(movieRequest.getRating());
-            movie.setActorList(movieRequest.getActorList());
-            movie.setMoviePoster(movieRequest.getMoviePoster());
-            movie.setUpdatedBy(movieRequest.getUpdatedBy());
-
-
-            Movies savedMovie = movieService.addMovie(movie);
-
-
-            if (movieRequest.getGenre() != null && !movieRequest.getGenre().isEmpty()) {
-                movieGenreService.saveGenresForMovie(savedMovie.getMovieId(), movieRequest.getGenre());
-            }
-
-            return ResponseEntity.ok(savedMovie);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error saving movie: " + e.getMessage());
-        }
+        return ResponseEntity.ok().body(movieService.addMovie(movieRequest));
     }
 
 
@@ -179,7 +150,7 @@ public class MoviesController {
                                          @RequestBody MovieRequestDTO movieRequest) {
         try {
 
-            Movies updatedMovie = movieService.updateMovie(id, movieRequest);
+            Movie updatedMovie = movieService.updateMovie(id, movieRequest);
             List<String> genres = movieRequest.getGenre();
             if (genres != null && !genres.isEmpty()) {
                 movieGenreService.deleteGenresByMovieId(id);

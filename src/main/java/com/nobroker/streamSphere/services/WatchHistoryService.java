@@ -3,7 +3,7 @@ package com.nobroker.streamSphere.services;
 import com.nobroker.streamSphere.dtos.WatchHistoryDTO;
 import com.nobroker.streamSphere.exception.MovieNotFoundException;
 import com.nobroker.streamSphere.exception.ProfileNotFoundException;
-import com.nobroker.streamSphere.models.Movies;
+import com.nobroker.streamSphere.models.Movie;
 import com.nobroker.streamSphere.models.Profile;
 import com.nobroker.streamSphere.models.WatchHistory;
 import com.nobroker.streamSphere.repositories.MoviesRepo;
@@ -30,7 +30,7 @@ public class WatchHistoryService {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new ProfileNotFoundException(profileId));
 
-        Movies movie = movieRepository.findById(movieId)
+        Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(() -> new MovieNotFoundException(movieId));
 
         if (watchHistoryRepository.existsByIdProfileIdAndIdMovieId(profileId, movieId)) {
