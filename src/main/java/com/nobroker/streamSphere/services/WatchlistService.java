@@ -61,7 +61,7 @@ public class WatchlistService {
     // Gets movie IDs in descending order of addition time
     public List<WatchlistDTO> getWatchlistMovieIds(Long profileId) {
         try {
-            List<Watchlist> watchlist = watchlistRepository.findByIdProfileIdOrderByAddedAtDesc(profileId);
+            List<Watchlist> watchlist = watchlistRepository.findByProfileIdOrderByAddedAtDesc(profileId);
             return watchlist.stream().map(item ->
                     WatchlistDTO.builder()
                             .profileId(item.getProfile().getId())
