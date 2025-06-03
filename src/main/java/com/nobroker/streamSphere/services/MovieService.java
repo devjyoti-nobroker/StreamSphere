@@ -1,5 +1,8 @@
 package com.nobroker.streamSphere.services;
 
+
+
+import java.time.LocalDateTime;
 import com.nobroker.streamSphere.dtos.MovieRequestDTO;
 import com.nobroker.streamSphere.models.Movies;
 import com.nobroker.streamSphere.repositories.MoviesRepo;
@@ -12,6 +15,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
 
 
 @Service
@@ -50,7 +55,7 @@ public class MovieService {
     }
 
     public Movies addMovie(Movies movie) {
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         movie.setCreatedAt(now);
         movie.setUpdatedAt(now);
         return moviesRepo.save(movie);
@@ -73,7 +78,7 @@ public class MovieService {
         if (updatedMovieData.getRating() != 0)           existingMovie.setRating(updatedMovieData.getRating());
         if (updatedMovieData.getUpdatedBy()  != null)     existingMovie.setUpdatedBy(updatedMovieData.getUpdatedBy());
 
-        existingMovie.setUpdatedAt(new Date());
+        existingMovie.setUpdatedAt(LocalDateTime.now());
 
         return moviesRepo.save(existingMovie);
     }

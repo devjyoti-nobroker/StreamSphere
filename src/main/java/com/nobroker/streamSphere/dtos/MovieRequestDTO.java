@@ -5,6 +5,10 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
+
+//Movie object + Genre array
+
+
 @Data
 public class MovieRequestDTO {
     private String movieName;

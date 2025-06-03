@@ -14,6 +14,8 @@ import java.util.List;
 @Repository
 public interface MovieGenreRepo extends JpaRepository<MovieGenre, MovieGenre.MovieGenreId> {
 
+
+    //Query is mainly written to join the Genre and movie table, and then we get only those columns that are required
     @Query(value = """
         SELECT  m.id   AS movieId,
                 m.title AS movieName,
@@ -28,9 +30,12 @@ public interface MovieGenreRepo extends JpaRepository<MovieGenre, MovieGenre.Mov
 
 
 
+    //Query to get genres of a movie
     @Query("SELECT mg.id.genre FROM MovieGenre mg WHERE mg.id.movieId = :movieId")
     List<String> findGenresByMovieId(@Param("movieId") Long movieId);
 
+
+    //Query to delete a movie by id
     void deleteByIdMovieId(Long movieId);
 
 
