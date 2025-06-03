@@ -41,12 +41,6 @@ public class Movies {
     @Column(name="image")
     private String moviePoster;
 
-    @Column(name="image_type")
-    private String imageType;
-
-    @Lob
-    @Column(name="image_data")
-    private byte[] imageData;
 
     @Column(name="created_at")
     private Date createdAt;

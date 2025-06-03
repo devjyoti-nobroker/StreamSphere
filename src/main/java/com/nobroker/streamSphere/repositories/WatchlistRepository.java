@@ -1,11 +1,7 @@
 package com.nobroker.streamSphere.repositories;
 
 import com.nobroker.streamSphere.models.Watchlist;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,7 +11,6 @@ public interface WatchlistRepository extends JpaRepository<Watchlist, Long> {
 
     //Finds all watchlist entries for a given profile in descending order of addedAt timestamp
     List<Watchlist> findByIdProfileIdOrderByAddedAtDesc(Long profileId);
-
 
     //Checks if a particular movie is already in the user's watchlist (to avoid duplicates)
     boolean existsByIdProfileIdAndIdMovieId(Long profileId, Long movieId);

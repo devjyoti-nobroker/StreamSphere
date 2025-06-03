@@ -1,5 +1,6 @@
 package com.nobroker.streamSphere.controllers;
 
+import com.nobroker.streamSphere.dtos.WatchHistoryDTO;
 import com.nobroker.streamSphere.models.WatchHistory;
 import com.nobroker.streamSphere.services.WatchHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class WatchHistoryController {
 
     // Get full watch history for a profile
     @GetMapping("/{profileId}")
-    public ResponseEntity<List<WatchHistory>> getWatchHistory(@PathVariable Long profileId) {
+    public ResponseEntity<List<WatchHistoryDTO>> getWatchHistory(@PathVariable Long profileId) {
         return ResponseEntity.ok(watchHistoryService.getWatchHistoryByProfile(profileId));
     }
 

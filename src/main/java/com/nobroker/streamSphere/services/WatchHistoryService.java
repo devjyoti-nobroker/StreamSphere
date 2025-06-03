@@ -1,5 +1,6 @@
 package com.nobroker.streamSphere.services;
 
+import com.nobroker.streamSphere.dtos.WatchHistoryDTO;
 import com.nobroker.streamSphere.models.Movies;
 import com.nobroker.streamSphere.models.Profile;
 import com.nobroker.streamSphere.models.WatchHistory;
@@ -45,9 +46,20 @@ public class WatchHistoryService {
     }
 
     // Get watch history of a user in descending order
-    public List<WatchHistory> getWatchHistoryByProfile(Long profileId) {
-        return watchHistoryRepository.findByProfileIdOrderByWatchedAtDesc(profileId);
+    public List<WatchHistoryDTO> getWatchHistoryByProfile(Long profileId) {
+        List<WatchHistory> historyList = watchHistoryRepository.findByProfileIdOrderByWatchedAtDesc(profileId);
+        return historyList.stream().map(history ->
+                WatchHistoryDTO.builder()
+                        .profileId(history.getProfile().getId())
+                        .movieId(history.getMovie().getMovieId())
+                        .movieTitle(history.getMovie().getMovieName()) // Assuming there's a `title` field
+                        .watchedAt(history.getWatchedAt())
+                        .build()
+        ).toList();
     }
+//    public List<WatchHistory> getWatchHistoryByProfile(Long profileId) {
+//        return watchHistoryRepository.findByProfileIdOrderByWatchedAtDesc(profileId);
+//    }
 
     // Check if a movie is in watch history
     public boolean isMovieWatched(Long profileId, Long movieId) {
