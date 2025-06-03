@@ -1,5 +1,6 @@
 package com.nobroker.streamSphere.controllers;
 
+import com.nobroker.streamSphere.dtos.WatchlistDTO;
 import com.nobroker.streamSphere.models.Watchlist;
 import com.nobroker.streamSphere.services.WatchlistService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class WatchlistController {
 
     // Get all movie IDs in watchlist
     @GetMapping("/{profileId}")
-    public ResponseEntity<List<Watchlist>> getWatchlist(@PathVariable Long profileId) {
+    public ResponseEntity<List<WatchlistDTO>> getWatchlist(@PathVariable Long profileId) {
         return ResponseEntity.ok(watchlistService.getWatchlistMovieIds(profileId));
     }
 

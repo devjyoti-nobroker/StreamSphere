@@ -1,5 +1,6 @@
 package com.nobroker.streamSphere.services;
 
+import com.nobroker.streamSphere.dtos.WatchlistDTO;
 import com.nobroker.streamSphere.models.Movies;
 import com.nobroker.streamSphere.models.Profile;
 import com.nobroker.streamSphere.models.Watchlist;
@@ -46,9 +47,21 @@ public class WatchlistService {
     }
 
     // Gets movie IDs in descending order of addition time
-    public List<Watchlist> getWatchlistMovieIds(Long profileId) {
-        return watchlistRepository.findByIdProfileIdOrderByAddedAtDesc(profileId);
+    public List<WatchlistDTO> getWatchlistMovieIds(Long profileId) {
+        List<Watchlist> watchlist = watchlistRepository.findByIdProfileIdOrderByAddedAtDesc(profileId);
+        return watchlist.stream().map(item ->
+                WatchlistDTO.builder()
+                        .profileId(item.getProfile().getId())
+                        .movieId(item.getMovie().getMovieId())
+                        .movieTitle(item.getMovie().getMovieName())
+                        .addedAt(item.getAddedAt())
+                        .build()
+        ).toList();
     }
+
+//    public List<Watchlist> getWatchlistMovieIds(Long profileId) {
+//        return watchlistRepository.findByIdProfileIdOrderByAddedAtDesc(profileId);
+//    }
 
     // Checks if a movie exists in the watchlist
     public boolean isInWatchlist(Long profileId, Long movieId) {
