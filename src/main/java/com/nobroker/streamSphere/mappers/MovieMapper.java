@@ -3,6 +3,7 @@ package com.nobroker.streamSphere.mappers;
 import com.nobroker.streamSphere.dtos.MovieCardDTO;
 import com.nobroker.streamSphere.dtos.MovieRequestDTO;
 import com.nobroker.streamSphere.models.Movie;
+import com.nobroker.streamSphere.models.MovieSearch;
 import com.nobroker.streamSphere.projection.MovieCardProjection;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,19 @@ public class MovieMapper {
                 movieCardProjection.getMoviePoster(),
                 movieCardProjection.getReleaseDate(),
                 movieCardProjection.getRating()
+        );
+    }
+
+    public MovieSearch toMovieSearch(Long movieId,MovieRequestDTO movieRequest){
+        return new MovieSearch(
+                movieId,
+                movieRequest.getMovieName(),
+                movieRequest.getGenre(),
+                movieRequest.getActorList(),
+                movieRequest.getDescription(),
+                movieRequest.getMoviePoster(),
+                movieRequest.getReleaseDate(),
+                movieRequest.getRating()
         );
     }
 

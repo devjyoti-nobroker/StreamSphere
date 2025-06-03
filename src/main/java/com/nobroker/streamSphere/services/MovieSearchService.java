@@ -2,6 +2,7 @@ package com.nobroker.streamSphere.services;
 
 import com.nobroker.streamSphere.dtos.MovieCardDTO;
 import com.nobroker.streamSphere.mappers.MovieMapper;
+import com.nobroker.streamSphere.models.MovieSearch;
 import com.nobroker.streamSphere.projection.MovieCardProjection;
 import com.nobroker.streamSphere.repositories.MovieSearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,13 @@ public class MovieSearchService {
 
     private MovieMapper movieMapper;
 
-//    public  MovieSearch save()
+    public MovieSearch save(MovieSearch movieSearch){
+        return movieSearchRepository.save(movieSearch);
+    }
+
+    public void remove(Long movieId){
+        movieSearchRepository.deleteById(movieId);
+    }
 
     public List<MovieCardDTO> searchByText(String text) throws IOException {
         Criteria criteria = new Criteria()

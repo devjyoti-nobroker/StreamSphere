@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import com.nobroker.streamSphere.dtos.MovieRequestDTO;
 import com.nobroker.streamSphere.mappers.MovieMapper;
 import com.nobroker.streamSphere.models.Movie;
+import com.nobroker.streamSphere.models.MovieSearch;
+import com.nobroker.streamSphere.repositories.MovieSearchRepository;
 import com.nobroker.streamSphere.repositories.MoviesRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +28,10 @@ public class MovieService {
     private MovieMapper movieMapper;
 
     @Autowired
-    private MovieGenreService movieGenreService;
+    private MovieSearchRepository movieSearchRepository;
 
+    @Autowired
+    private MovieGenreService movieGenreService;
 
     public List<Movie> getAllMovies() {
         return moviesRepo.findAll();
@@ -53,35 +57,32 @@ public class MovieService {
         return moviesRepo.findAllByOrderByRatingDesc();
     }
 
+    @Transactional
     public Movie addMovie(MovieRequestDTO movieRequest) {
-
             // 1. Convert DTO to Movies entity
             Movie movie = movieMapper.toMovie(movieRequest);
-
             Movie savedMovie = moviesRepo.save(movie);
-
             if (movieRequest.getGenre() != null && !movieRequest.getGenre().isEmpty()) {
                 movieGenreService.saveGenresForMovie(savedMovie.getMovieId(), movieRequest.getGenre());
             }
-
+            MovieSearch movieSearch = movieMapper.toMovieSearch(savedMovie.getMovieId(),movieRequest);
+            movieSearchRepository.save(movieSearch);
             return savedMovie;
     }
 
+    @Transactional
     public Movie updateMovie(Long id, MovieRequestDTO updatedMovieData) {
 
         Movie existingMovie = moviesRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Movie not found with id: " + id));
 
-        if (updatedMovieData.getMovieName()    != null) existingMovie.setMovieName(updatedMovieData.getMovieName());
-        if (updatedMovieData.getDescription()  != null) existingMovie.setDescription(updatedMovieData.getDescription());
-        if (updatedMovieData.getActorList()    != null) existingMovie.setActorList(String.join(", ",updatedMovieData.getActorList()));
-        if (updatedMovieData.getReleaseDate()  != null) existingMovie.setReleaseDate(updatedMovieData.getReleaseDate());
-        if (updatedMovieData.getRunTime()      != null) existingMovie.setRunTime(updatedMovieData.getRunTime());
-        if (updatedMovieData.getMoviePoster()  != null) existingMovie.setMoviePoster(updatedMovieData.getMoviePoster());
-        if (updatedMovieData.getRating() != 0)           existingMovie.setRating(updatedMovieData.getRating());
-        if (updatedMovieData.getUpdatedBy()  != null)     existingMovie.setUpdatedBy(updatedMovieData.getUpdatedBy());
+        Movie movie = movieMapper.toMovie(updatedMovieData);
+        Movie savedMovie = moviesRepo.save(movie);
 
-        existingMovie.setUpdatedAt(LocalDateTime.now());
+        movieGenreService.saveGenresForMovie(savedMovie.getMovieId(), updatedMovieData.getGenre());
+
+        MovieSearch movieSearch = movieMapper.toMovieSearch(savedMovie.getMovieId(),updatedMovieData);
+        movieSearchRepository.save(movieSearch);
 
         return moviesRepo.save(existingMovie);
     }
@@ -94,7 +95,7 @@ public class MovieService {
 
         // Then delete the movie
         moviesRepo.deleteById(movieId);
+        movieSearchRepository.deleteById(movieId);
     }
-
 
 }
