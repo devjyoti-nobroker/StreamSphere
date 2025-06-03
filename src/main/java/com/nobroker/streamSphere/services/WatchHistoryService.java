@@ -30,7 +30,7 @@ public class WatchHistoryService {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new ProfileNotFoundException(profileId));
 
-        Movie movie = movieRepository.findById(movieId)
+        Movies movie = movieRepository.findById(movieId)
                 .orElseThrow(() -> new MovieNotFoundException(movieId));
 
         if (watchHistoryRepository.existsByIdProfileIdAndIdMovieId(profileId, movieId)) {
