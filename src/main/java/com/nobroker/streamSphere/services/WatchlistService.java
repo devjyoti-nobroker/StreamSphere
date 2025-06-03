@@ -3,6 +3,7 @@ package com.nobroker.streamSphere.services;
 import com.nobroker.streamSphere.dtos.WatchlistDTO;
 import com.nobroker.streamSphere.exception.ProfileNotFoundException;
 import com.nobroker.streamSphere.exception.ServiceException;
+import com.nobroker.streamSphere.mappers.WatchlistMapper;
 import com.nobroker.streamSphere.models.Movies;
 import com.nobroker.streamSphere.models.Profile;
 import com.nobroker.streamSphere.models.Watchlist;
@@ -58,22 +59,18 @@ public class WatchlistService {
         }
     }
 
-    // Gets movie IDs in descending order of addition time
+    // Gets movies in descending order of addition time
     public List<WatchlistDTO> getWatchlistMovieIds(Long profileId) {
         try {
             List<Watchlist> watchlist = watchlistRepository.findByProfileIdOrderByAddedAtDesc(profileId);
-            return watchlist.stream().map(item ->
-                    WatchlistDTO.builder()
-                            .profileId(item.getProfile().getId())
-                            .movieId(item.getMovie().getMovieId())
-                            .movieTitle(item.getMovie().getMovieName())
-                            .addedAt(item.getAddedAt())
-                            .build()
-            ).toList();
+            return watchlist.stream()
+                    .map(WatchlistMapper::toDTO)
+                    .toList();
         } catch (Exception e) {
             throw new ServiceException("Error while fetching watchlist", e);
         }
     }
+
 
     // Checks if a movie exists in the watchlist
     public boolean isInWatchlist(Long profileId, Long movieId) {

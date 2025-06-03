@@ -3,6 +3,7 @@ package com.nobroker.streamSphere.services;
 import com.nobroker.streamSphere.dtos.WatchHistoryDTO;
 import com.nobroker.streamSphere.exception.MovieNotFoundException;
 import com.nobroker.streamSphere.exception.ProfileNotFoundException;
+import com.nobroker.streamSphere.mappers.WatchHistoryMapper;
 import com.nobroker.streamSphere.models.Movies;
 import com.nobroker.streamSphere.models.Profile;
 import com.nobroker.streamSphere.models.WatchHistory;
@@ -57,15 +58,11 @@ public class WatchHistoryService {
 
         List<WatchHistory> historyList = watchHistoryRepository.findByProfileIdOrderByWatchedAtDesc(profileId);
 
-        return historyList.stream().map(history ->
-                WatchHistoryDTO.builder()
-                        .profileId(history.getProfile().getId())
-                        .movieId(history.getMovie().getMovieId())
-                        .movieTitle(history.getMovie().getMovieName())
-                        .watchedAt(history.getWatchedAt())
-                        .build()
-        ).toList();
+        return historyList.stream()
+                .map(WatchHistoryMapper::toDTO)
+                .toList();
     }
+
 
     // Check if a movie is in watch history
     public boolean isMovieWatched(Long profileId, Long movieId) {
