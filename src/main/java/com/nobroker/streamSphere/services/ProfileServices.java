@@ -46,9 +46,7 @@ public class ProfileServices {
             throw new MaxProfileReachedException(account);
         }
 
-        Profile mappedProfile = profileMapper.toProfile(profileDTO);
-        mappedProfile.setAccount(account);
-
+        Profile mappedProfile = profileMapper.toProfile(profileDTO,account);
         Profile dbProfile = profileRepo.save(mappedProfile);
 
         ProfileDTO dbProfileDTO = profileMapper.toProfileDTO(dbProfile);
