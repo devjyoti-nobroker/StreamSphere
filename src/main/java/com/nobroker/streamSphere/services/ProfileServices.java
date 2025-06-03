@@ -21,10 +21,10 @@ import java.util.Objects;
 @Service
 public class ProfileServices {
 
-    //        accountId we will get from by JWT token
+    //  accountId we will get from by JWT token
     Long accountId = 1L;
 
-//    will be fetched from the db and cashed win the redis
+    //  will be fetched from the db and cashed win the redis
     final int maxProfilePerUserLimit = 5;
 
     @Autowired
@@ -36,73 +36,80 @@ public class ProfileServices {
     @Autowired
     private ProfileMapper profileMapper;
 
+    // save new Profile for the active Account
     @Transactional
     public ProfileDTO save(ProfileDTO profileDTO){
-
+    // get number of profiles for the account
         Long countProfilePerUser = profileRepo.countByAccountId(accountId);
         Account account = accountRepo.getReferenceById(accountId);
 
-        if(countProfilePerUser == maxProfilePerUserLimit){
+        // implementing limit on the max number of profile per user
+        if(countProfilePerUser >= maxProfilePerUserLimit){
             throw new MaxProfileReachedException(account);
         }
 
+        // profileDTO -> profile via profileMapper then save
         Profile mappedProfile = profileMapper.toProfile(profileDTO,account);
         Profile dbProfile = profileRepo.save(mappedProfile);
 
-        ProfileDTO dbProfileDTO = profileMapper.toProfileDTO(dbProfile);
-        return dbProfileDTO;
+        // Returning dbProfileDTO
+        return profileMapper.toProfileDTO(dbProfile);
     }
 
+    // Get Profile detail
     public ProfileDTO getProfile(Long profileId){
         Profile dbProfile = safelyGetProfile(profileId);
 
-        if(!Objects.equals(dbProfile.getAccount().getId(), accountId)){
-            throw new UnauthorizedProfileAccessException(profileId);
-        }
-
-        ProfileDTO profileDTO = profileMapper.toProfileDTO(dbProfile);
-
-        return profileDTO;
+        // Ensuring that the profile belongs to the active Account
+        validateProfileBelongToAccount(dbProfile,accountId);
+        // Returning dbProfileDTO
+        return profileMapper.toProfileDTO(dbProfile);
     }
 
+    // Updating Profile
     @Transactional
     public ProfileDTO updateProfileByProfileId(Long profileId, ProfileDTO profileDTO){
         Profile dbProfile = safelyGetProfile(profileId);
 
+        // Updating only modified fields
         if(profileDTO.getName() != null)
             dbProfile.setName(profileDTO.getName());
         if(profileDTO.getAdult() != null)
             dbProfile.setAdult(profileDTO.getAdult());
 
+        // saving the changes and returning dbProfileDTO
         profileRepo.save(dbProfile);
-
-        ProfileDTO updatedProfileDTO = profileMapper.toProfileDTO(dbProfile);
-        return updatedProfileDTO;
+        return profileMapper.toProfileDTO(dbProfile);
     }
 
     public List<ProfileDTO> getAll(){
-
+        // All Profiles belonging to the current Account
         List<Profile> dbProfiles = profileRepo.findByAccountId(accountId);
-
+        // convert Profile to ProfileDTO
         return dbProfiles
                 .stream()
-                .map(profiles -> profileMapper.toProfileDTO(profiles))
+                .map(profileMapper::toProfileDTO)
                 .toList();
     }
 
+    @Transactional
     public void deleteProfileById(Long profileId){
         Profile dbProfile = safelyGetProfile(profileId);
-
-        if(!Objects.equals(dbProfile.getAccount().getId(), accountId)){
-            throw new UnauthorizedProfileAccessException(profileId);
-        }
+        // Ensuring that the profile belongs to the active Account
+        validateProfileBelongToAccount(dbProfile,accountId);
+        // deleting Profile
         profileRepo.deleteById(profileId);
     }
 
     private Profile safelyGetProfile(Long profileId){
-        Profile dbProfile = profileRepo.findById(profileId)
+        return profileRepo.findById(profileId)
                 .orElseThrow(()-> new ProfileNotFoundException(profileId));
-        return dbProfile;
+    }
+
+    private void validateProfileBelongToAccount(Profile profile, Long accountId){
+        if(!Objects.equals(profile.getAccount().getId(), accountId)){
+            throw new UnauthorizedProfileAccessException(profile.getId());
+        }
     }
 
 }
