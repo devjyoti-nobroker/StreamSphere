@@ -1,7 +1,9 @@
 package com.nobroker.streamSphere.services;
 
+import com.nobroker.streamSphere.dtos.MovieRequestDTO;
 import com.nobroker.streamSphere.models.Movies;
 import com.nobroker.streamSphere.repositories.MoviesRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +20,9 @@ public class MovieService {
 
     @Autowired
     private MoviesRepo moviesRepo;
+
+    @Autowired
+    private MovieGenreService movieGenreService;
 
 
     public List<Movies> getAllMovies() {
@@ -44,56 +49,43 @@ public class MovieService {
         return moviesRepo.findAllByOrderByRatingDesc();
     }
 
-    public Movies addMovie(Movies movie, MultipartFile imageFile) throws IOException {
-        movie.setMoviePoster(imageFile.getOriginalFilename());
-        movie.setImageType(imageFile.getContentType());
-        movie.setImageData(imageFile.getBytes());
-        movie.setCreatedAt(new Date());
-        movie.setUpdatedAt(new Date());
+    public Movies addMovie(Movies movie) {
+        Date now = new Date();
+        movie.setCreatedAt(now);
+        movie.setUpdatedAt(now);
         return moviesRepo.save(movie);
     }
 
 
 
 
-    public Movies updateMovie(Long id, Movies updatedMovieData, MultipartFile imageFile) throws IOException {
-        // 1. Fetch existing movie
+    public Movies updateMovie(Long id, MovieRequestDTO updatedMovieData) {
+
         Movies existingMovie = moviesRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Movie not found with id: " + id));
 
-        // 2. Update fields only if new values are provided
-        if (updatedMovieData.getMovieName() != null)
-            existingMovie.setMovieName(updatedMovieData.getMovieName());
-
-        if (updatedMovieData.getDescription() != null)
-            existingMovie.setDescription(updatedMovieData.getDescription());
-
-        if (updatedMovieData.getActorList() != null)
-            existingMovie.setActorList(updatedMovieData.getActorList());
-
-        if (updatedMovieData.getRating() != 0)
-            existingMovie.setRating(updatedMovieData.getRating());
-
-        if (updatedMovieData.getReleaseDate() != null)
-            existingMovie.setReleaseDate(updatedMovieData.getReleaseDate());
-
-        if (updatedMovieData.getRunTime() != null)
-            existingMovie.setRunTime(updatedMovieData.getRunTime());
-
-        if (updatedMovieData.getUpdatedBy() != null)
-            existingMovie.setUpdatedBy(updatedMovieData.getUpdatedBy());
+        if (updatedMovieData.getMovieName()    != null) existingMovie.setMovieName(updatedMovieData.getMovieName());
+        if (updatedMovieData.getDescription()  != null) existingMovie.setDescription(updatedMovieData.getDescription());
+        if (updatedMovieData.getActorList()    != null) existingMovie.setActorList(updatedMovieData.getActorList());
+        if (updatedMovieData.getReleaseDate()  != null) existingMovie.setReleaseDate(updatedMovieData.getReleaseDate());
+        if (updatedMovieData.getRunTime()      != null) existingMovie.setRunTime(updatedMovieData.getRunTime());
+        if (updatedMovieData.getMoviePoster()  != null) existingMovie.setMoviePoster(updatedMovieData.getMoviePoster());
+        if (updatedMovieData.getRating() != 0)           existingMovie.setRating(updatedMovieData.getRating());
+        if (updatedMovieData.getUpdatedBy()  != null)     existingMovie.setUpdatedBy(updatedMovieData.getUpdatedBy());
 
         existingMovie.setUpdatedAt(new Date());
 
-        // 3. If a new image file is provided
-        if (imageFile != null && !imageFile.isEmpty()) {
-            existingMovie.setMoviePoster(imageFile.getOriginalFilename());
-            existingMovie.setImageType(imageFile.getContentType());
-            existingMovie.setImageData(imageFile.getBytes());
-        }
-
-        // 4. Save and return
         return moviesRepo.save(existingMovie);
+    }
+
+
+    @Transactional
+    public void deleteMovieById(Long movieId) {
+        // Delete genres first (to avoid FK constraint issues)
+        movieGenreService.deleteGenresByMovieId(movieId);
+
+        // Then delete the movie
+        moviesRepo.deleteById(movieId);
     }
 
 

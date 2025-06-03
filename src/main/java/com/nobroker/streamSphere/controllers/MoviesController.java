@@ -1,7 +1,11 @@
 package com.nobroker.streamSphere.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nobroker.streamSphere.dtos.MovieRequestDTO;
+import com.nobroker.streamSphere.models.MovieGenre;
 import com.nobroker.streamSphere.models.Movies;
+import com.nobroker.streamSphere.repositories.MovieGenreRepo;
+import com.nobroker.streamSphere.services.MovieGenreService;
 import com.nobroker.streamSphere.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +26,12 @@ public class MoviesController {
 
     @Autowired
     private MovieService movieService;
+
+    @Autowired
+    private MovieGenreRepo movieGenreRepo;
+
+    @Autowired
+    private MovieGenreService movieGenreService;
 
 
 
@@ -106,17 +117,30 @@ public class MoviesController {
     }
 
 
-
-
-    @PostMapping(value = "/movies", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addMovie(@RequestPart("movie") String movieJson,
-                                      @RequestPart("imageFile") MultipartFile imageFile) {
+    @PostMapping("/movies")
+    public ResponseEntity<?> addMovie(@RequestBody MovieRequestDTO movieRequest) {
         try {
-            // Manually convert JSON string to Movies object
-            ObjectMapper objectMapper = new ObjectMapper();
-            Movies movie = objectMapper.readValue(movieJson, Movies.class);
+            // 1. Convert DTO to Movies entity
+            Movies movie = new Movies();
+            movie.setMovieName(movieRequest.getMovieName());
+            movie.setReleaseDate(movieRequest.getReleaseDate());
+            movie.setRunTime(movieRequest.getRunTime());
+            movie.setDescription(movieRequest.getDescription());
+            movie.setRating(movieRequest.getRating());
+            movie.setActorList(movieRequest.getActorList());
+            movie.setMoviePoster(movieRequest.getMoviePoster());
+            movie.setCreatedAt(new Date());
+            movie.setUpdatedAt(new Date());
+            movie.setUpdatedBy(movieRequest.getUpdatedBy());
 
-            Movies savedMovie = movieService.addMovie(movie, imageFile);
+
+            Movies savedMovie = movieService.addMovie(movie);
+
+
+            if (movieRequest.getGenre() != null && !movieRequest.getGenre().isEmpty()) {
+                movieGenreService.saveGenresForMovie(savedMovie.getMovieId(), movieRequest.getGenre());
+            }
+
             return ResponseEntity.ok(savedMovie);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -126,23 +150,40 @@ public class MoviesController {
 
 
 
-    @PutMapping(value = "/movies/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+
+    @PutMapping("/movies/{id}")
     public ResponseEntity<?> updateMovie(@PathVariable Long id,
-                                         @RequestPart("movie") String movieJson,
-                                         @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
+                                         @RequestBody MovieRequestDTO movieRequest) {
         try {
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            Movies movie = objectMapper.readValue(movieJson, Movies.class);
-
-            Movies updatedMovie = movieService.updateMovie(id, movie, imageFile);
-
+            Movies updatedMovie = movieService.updateMovie(id, movieRequest);
+            List<String> genres = movieRequest.getGenre();
+            if (genres != null && !genres.isEmpty()) {
+                movieGenreService.deleteGenresByMovieId(id);
+                movieGenreService.saveGenresForMovie(id, genres);
+            }
             return ResponseEntity.ok(updatedMovie);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error updating movie: " + e.getMessage());
         }
     }
+
+
+    @DeleteMapping("/movies/{id}")
+    public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
+        try {
+            movieService.deleteMovieById(id);
+            return ResponseEntity.ok("Movie deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting movie: " + e.getMessage());
+        }
+    }
+
+
+
 
 
 
