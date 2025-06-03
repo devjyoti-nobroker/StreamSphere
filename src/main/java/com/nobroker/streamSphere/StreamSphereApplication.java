@@ -19,8 +19,7 @@ public class StreamSphereApplication {
 		poke.setMovieId(2324432132342L);
 		poke.setMovieName("sammy movie");
 		poke.setMoviePoster("2143ed33r43d31d134r5");
-		poke.setCreatedAt(new Date());
-		poke.setUpdatedAt(new Date());
+
 		Calendar cal = Calendar.getInstance();
 		cal.set(2026, Calendar.JUNE, 2);
 		poke.setReleaseDate(cal.getTime());
