@@ -1,6 +1,9 @@
 package com.nobroker.streamSphere.services;
 
 import com.nobroker.streamSphere.dtos.WatchHistoryDTO;
+import com.nobroker.streamSphere.exception.MovieNotFoundException;
+import com.nobroker.streamSphere.exception.ProfileNotFoundException;
+import com.nobroker.streamSphere.mappers.WatchHistoryMapper;
 import com.nobroker.streamSphere.models.Movies;
 import com.nobroker.streamSphere.models.Profile;
 import com.nobroker.streamSphere.models.WatchHistory;
@@ -25,41 +28,45 @@ public class WatchHistoryService {
     // Add a movie to watch history
     @Transactional
     public WatchHistory addToHistory(Long profileId, Long movieId) {
-        Profile profile = profileRepository.findById(profileId).orElseThrow();
-        Movies movie = movieRepository.findById(movieId).orElseThrow();
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new ProfileNotFoundException(profileId));
 
-        // If it already exists, remove and re-add to update watchedAt
+        Movies movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new MovieNotFoundException(movieId));
+
+        WatchHistory history;
+
         if (watchHistoryRepository.existsByIdProfileIdAndIdMovieId(profileId, movieId)) {
-            watchHistoryRepository.deleteByIdProfileIdAndIdMovieId(profileId, movieId);
+            history = watchHistoryRepository.findByIdProfileIdAndIdMovieId(profileId, movieId).get();
+            history.setWatchedAt(LocalDateTime.now());
+        } else {
+            WatchHistory.WatchHistoryId id = new WatchHistory.WatchHistoryId(profileId, movieId);
+
+            history = WatchHistory.builder()
+                    .id(id)
+                    .profile(profile)
+                    .movie(movie)
+                    .watchedAt(LocalDateTime.now())
+                    .build();
         }
-
-        WatchHistory.WatchHistoryId id = new WatchHistory.WatchHistoryId(profileId, movieId);
-
-        WatchHistory history = WatchHistory.builder()
-                .id(id)
-                .profile(profile)
-                .movie(movie)
-                .watchedAt(LocalDateTime.now())
-                .build();
 
         return watchHistoryRepository.save(history);
     }
 
+
     // Get watch history of a user in descending order
     public List<WatchHistoryDTO> getWatchHistoryByProfile(Long profileId) {
+        if (!profileRepository.existsById(profileId)) {
+            throw new ProfileNotFoundException(profileId);
+        }
+
         List<WatchHistory> historyList = watchHistoryRepository.findByProfileIdOrderByWatchedAtDesc(profileId);
-        return historyList.stream().map(history ->
-                WatchHistoryDTO.builder()
-                        .profileId(history.getProfile().getId())
-                        .movieId(history.getMovie().getMovieId())
-                        .movieTitle(history.getMovie().getMovieName()) // Assuming there's a `title` field
-                        .watchedAt(history.getWatchedAt())
-                        .build()
-        ).toList();
+
+        return historyList.stream()
+                .map(WatchHistoryMapper::toDTO)
+                .toList();
     }
-//    public List<WatchHistory> getWatchHistoryByProfile(Long profileId) {
-//        return watchHistoryRepository.findByProfileIdOrderByWatchedAtDesc(profileId);
-//    }
+
 
     // Check if a movie is in watch history
     public boolean isMovieWatched(Long profileId, Long movieId) {

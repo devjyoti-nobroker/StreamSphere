@@ -1,6 +1,7 @@
 package com.nobroker.streamSphere.mappers;
 
 import com.nobroker.streamSphere.dtos.ProfileDTO;
+import com.nobroker.streamSphere.models.Account;
 import com.nobroker.streamSphere.models.Profile;
 import org.springframework.stereotype.Component;
 
@@ -9,10 +10,11 @@ import java.time.LocalDateTime;
 @Component
 public class ProfileMapper {
 
-    public Profile toProfile(ProfileDTO profileDTO){
+    public Profile toProfile(ProfileDTO profileDTO, Account account){
         Profile profile = new Profile();
         profile.setName(profileDTO.getName());
         profile.setAdult(profileDTO.getAdult());
+        profile.setAccount(account);
 
         return profile;
     }

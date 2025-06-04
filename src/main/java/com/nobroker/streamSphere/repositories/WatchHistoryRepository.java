@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface WatchHistoryRepository extends JpaRepository<WatchHistory, Long> {
@@ -17,5 +18,8 @@ public interface WatchHistoryRepository extends JpaRepository<WatchHistory, Long
 
     //Delete watch history for a specific movie of a profile
     void deleteByIdProfileIdAndIdMovieId(Long profileId, Long movieId);
+
+    //Finds the watch history entry for a particular profileId and movieId
+    Optional<WatchHistory> findByIdProfileIdAndIdMovieId(Long profileId, Long movieId);
 
 }

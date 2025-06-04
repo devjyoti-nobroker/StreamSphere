@@ -36,6 +36,12 @@ public class WatchlistController {
         return ResponseEntity.ok("Movie removed from watchlist.");
     }
 
+    // Check if a movie is in watch history
+    @GetMapping("/{profileId}/check/{movieId}")
+    public ResponseEntity<Boolean> isWatched(@PathVariable Long profileId, @PathVariable Long movieId) {
+        return ResponseEntity.ok(watchlistService.isInWatchlist(profileId, movieId));
+    }
+
     // Get count of movies in watchlist
     @GetMapping("/{profileId}/count")
     public ResponseEntity<Long> getWatchlistCount(@PathVariable Long profileId) {
