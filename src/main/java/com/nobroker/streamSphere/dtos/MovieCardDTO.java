@@ -14,7 +14,7 @@ public class MovieCardDTO {
     private Long movieId;
     private String movieName;
     private String moviePoster;
-    private Date releaseDate;
+    private String releaseDate;
     private Float rating;
 
 }

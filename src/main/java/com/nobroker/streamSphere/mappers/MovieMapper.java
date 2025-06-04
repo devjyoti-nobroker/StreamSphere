@@ -7,6 +7,10 @@ import com.nobroker.streamSphere.models.MovieSearch;
 import com.nobroker.streamSphere.projection.MovieCardProjection;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Component
 public class MovieMapper {
 
@@ -14,8 +18,19 @@ public class MovieMapper {
         return new MovieCardDTO(movieCardProjection.getMovieId(),
                 movieCardProjection.getMovieName(),
                 movieCardProjection.getMoviePoster(),
-                movieCardProjection.getReleaseDate(),
+                movieCardProjection.getReleaseDate().toString(),
                 movieCardProjection.getRating()
+        );
+    }
+
+    public MovieCardDTO toMovieDTO(MovieSearch movieSearch) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy");
+        return new MovieCardDTO(
+                movieSearch.getId(),
+                movieSearch.getTitle(),
+                movieSearch.getImage(),
+                movieSearch.getReleased(),
+                movieSearch.getRating()
         );
     }
 
@@ -27,7 +42,7 @@ public class MovieMapper {
                 movieRequest.getActorList(),
                 movieRequest.getDescription(),
                 movieRequest.getMoviePoster(),
-                movieRequest.getReleaseDate(),
+                movieRequest.getReleaseDate().toString(),
                 movieRequest.getRating()
         );
     }
