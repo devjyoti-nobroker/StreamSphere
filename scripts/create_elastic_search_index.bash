@@ -38,6 +38,9 @@ curl -s -X PUT "$ES_HOST:$ES_PORT/$INDEX_NAME" -H 'Content-Type: application/jso
       "image":   { "type": "text", "index": false },
       "released":   { "type": "date" },
       "rating":   { "type": "float", "index": false }
+    },
+    "suggest": {
+      "type": "completion"
     }
   }
 }' && echo "✅ Created index '$INDEX_NAME'"
