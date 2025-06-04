@@ -33,21 +33,25 @@ public class WatchHistoryService {
         Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(() -> new MovieNotFoundException(movieId));
 
+        WatchHistory history;
+
         if (watchHistoryRepository.existsByIdProfileIdAndIdMovieId(profileId, movieId)) {
-            watchHistoryRepository.deleteByIdProfileIdAndIdMovieId(profileId, movieId);
+            history = watchHistoryRepository.findByIdProfileIdAndIdMovieId(profileId, movieId).get();
+            history.setWatchedAt(LocalDateTime.now());
+        } else {
+            WatchHistory.WatchHistoryId id = new WatchHistory.WatchHistoryId(profileId, movieId);
+
+            history = WatchHistory.builder()
+                    .id(id)
+                    .profile(profile)
+                    .movie(movie)
+                    .watchedAt(LocalDateTime.now())
+                    .build();
         }
-
-        WatchHistory.WatchHistoryId id = new WatchHistory.WatchHistoryId(profileId, movieId);
-
-        WatchHistory history = WatchHistory.builder()
-                .id(id)
-                .profile(profile)
-                .movie(movie)
-                .watchedAt(LocalDateTime.now())
-                .build();
 
         return watchHistoryRepository.save(history);
     }
+
 
     // Get watch history of a user in descending order
     public List<WatchHistoryDTO> getWatchHistoryByProfile(Long profileId) {
