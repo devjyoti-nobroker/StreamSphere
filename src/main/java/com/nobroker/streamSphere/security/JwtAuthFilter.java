@@ -1,5 +1,6 @@
 package com.nobroker.streamSphere.security;
 
+import com.nobroker.streamSphere.util.UserContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private UserContext userContext;
+
+    private boolean isPublicRoute(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.equals("/auth/login") || path.equals("/api/register");
+    }
+
+    private boolean isProfileOnlyRoute(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+        return (path.equals("/api/profiles") && (method.equals("GET") || method.equals("POST"))) || (path.matches("^/api/profiles/\\d+$") && method.equals("GET"));
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
@@ -30,34 +45,40 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         String username = null;
         String jwt = null;
-        System.out.println("mayank 1");
-        if(authHeader!=null){
-            System.out.println(authHeader);
-        }else{
-            System.out.println("Mayank Pokemon");
-        }
+        Long profileId = null;
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
             username = jwtUtil.extractUsername(jwt);
+            profileId = jwtUtil.extractProfileId(jwt);
 
-            System.out.println("mayank 2");
+            userContext.setEmail(username);
+            userContext.setProfileId(profileId);
         }
-        System.out.println("mayank 3");
+
+        if (!isPublicRoute(request)) {
+            if (jwt == null || !jwtUtil.validateToken(jwt)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid JWT");
+                return;
+            }
+
+            if (!isProfileOnlyRoute(request) && !jwtUtil.validateTokenWithProfile(jwt)) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Profile ID required for this route");
+                return;
+            }
+        }
+
+
+        // Set Spring Security Context
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            System.out.println("mayank 4");
             if (jwtUtil.validateToken(jwt)) {
-
-                System.out.println("mayank 5");
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-
-                System.out.println("mayank 6");
             }
         }
-        System.out.println("mayank 7");
+
         filterChain.doFilter(request, response);
-        System.out.println("mayank 8");
     }
 }
