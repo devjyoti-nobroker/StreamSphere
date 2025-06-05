@@ -1,7 +1,6 @@
 package com.nobroker.streamSphere.models;
 
 
-import co.elastic.clients.util.DateTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name="movies")
-public class Movies {
+public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
