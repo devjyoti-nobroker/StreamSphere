@@ -11,6 +11,7 @@ import com.nobroker.streamSphere.repositories.AccountRepo;
 import com.nobroker.streamSphere.repositories.ProfileRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.Objects;
 public class ProfileService {
 
     //  accountId we will get from by JWT token
-    Long accountId = 1L;
+
 
     //  will be fetched from the db and cashed win the redis
     final int maxProfilePerUserLimit = 5;
@@ -34,12 +35,29 @@ public class ProfileService {
     @Autowired
     private ProfileMapper profileMapper;
 
+
+    //Get the email id from here
+    private String getLoggedInEmail() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+
+    private Long getAccoutId(){
+        return accountRepo.findByEmail(getLoggedInEmail())
+                .orElseThrow(() -> new RuntimeException("Account not found"))
+                .getId();
+    }
+
+
+
+
+
     // save new Profile for the active Account
     @Transactional
     public ProfileDTO save(ProfileDTO profileDTO){
     // get number of profiles for the account
-        Long countProfilePerUser = profileRepo.countByAccountId(accountId);
-        Account account = accountRepo.getReferenceById(accountId);
+        Long countProfilePerUser = profileRepo.countByAccountId(getAccoutId());
+        Account account = accountRepo.getReferenceById(getAccoutId());
 
         // implementing limit on the max number of profile per user
         if(countProfilePerUser >= maxProfilePerUserLimit){
@@ -59,7 +77,7 @@ public class ProfileService {
         Profile dbProfile = safelyGetProfile(profileId);
 
         // Ensuring that the profile belongs to the active Account
-        validateProfileBelongToAccount(dbProfile,accountId);
+        validateProfileBelongToAccount(dbProfile,getAccoutId());
         // Returning dbProfileDTO
         return profileMapper.toProfileDTO(dbProfile);
     }
@@ -81,6 +99,13 @@ public class ProfileService {
     }
 
     public List<ProfileDTO> getAll(){
+
+        String email = getLoggedInEmail();
+        Long accountId = accountRepo.findByEmail(getLoggedInEmail())
+                .orElseThrow(() -> new RuntimeException("Account not found"))
+                .getId();
+
+
         // All Profiles belonging to the current Account
         List<Profile> dbProfiles = profileRepo.findByAccountId(accountId);
         // convert Profile to ProfileDTO
@@ -94,7 +119,7 @@ public class ProfileService {
     public void deleteProfileById(Long profileId){
         Profile dbProfile = safelyGetProfile(profileId);
         // Ensuring that the profile belongs to the active Account
-        validateProfileBelongToAccount(dbProfile,accountId);
+        validateProfileBelongToAccount(dbProfile,getAccoutId());
         // deleting Profile
         profileRepo.deleteById(profileId);
     }
