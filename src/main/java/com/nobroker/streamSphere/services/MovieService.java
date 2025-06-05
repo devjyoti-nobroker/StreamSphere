@@ -4,6 +4,7 @@ package com.nobroker.streamSphere.services;
 
 import java.time.LocalDateTime;
 import com.nobroker.streamSphere.dtos.MovieRequestDTO;
+import com.nobroker.streamSphere.dtos.MovieResponseDTO;
 import com.nobroker.streamSphere.mappers.MovieMapper;
 import com.nobroker.streamSphere.models.Movie;
 import com.nobroker.streamSphere.models.MovieSearch;
@@ -41,6 +42,16 @@ public class MovieService {
         return moviesRepo.findById(id);
     }
 
+    public MovieResponseDTO getMovieResponseById(Long id) {
+
+        Movie movie = moviesRepo.findById(id).get();
+        List<String> genre = movieGenreService.getGenresByMovieId(id);
+
+        return movieMapper.toMovieResponse(movie,genre);
+    }
+
+
+
     public List<Movie> getMoviesSortedByReleaseDateAsc() {
         return moviesRepo.findAllByOrderByReleaseDateAsc();
     }
@@ -77,6 +88,8 @@ public class MovieService {
                 .orElseThrow(() -> new RuntimeException("Movie not found with id: " + id));
 
         Movie movie = movieMapper.toMovie(updatedMovieData);
+        movie.setMovieId(id);
+        movie.setCreatedAt(existingMovie.getCreatedAt());
         Movie savedMovie = moviesRepo.save(movie);
 
         movieGenreService.saveGenresForMovie(savedMovie.getMovieId(), updatedMovieData.getGenre());

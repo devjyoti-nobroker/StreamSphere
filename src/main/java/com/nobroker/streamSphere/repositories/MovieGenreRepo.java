@@ -1,5 +1,6 @@
 package com.nobroker.streamSphere.repositories;
 
+import com.nobroker.streamSphere.models.Movie;
 import com.nobroker.streamSphere.models.MovieGenre;
 import com.nobroker.streamSphere.projection.MovieCardProjection;
 import io.lettuce.core.dynamic.annotation.Param;
@@ -26,8 +27,6 @@ public interface MovieGenreRepo extends JpaRepository<MovieGenre, MovieGenre.Mov
         WHERE mg.genre = :genre
         """, nativeQuery = true)
     List<MovieCardProjection> findMovieCardsByGenre(@Param("genre") String genre);
-
-
 
     //Query to get genres of a movie
     @Query("SELECT mg.id.genre FROM MovieGenre mg WHERE mg.id.movieId = :movieId")

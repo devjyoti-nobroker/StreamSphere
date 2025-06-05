@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin
+//@CrossOrigin
 public class MoviesController {
 
     @Autowired
@@ -51,22 +51,8 @@ public class MoviesController {
 
     @GetMapping("/movies/{id}")
     public ResponseEntity<?> getMovieById(@PathVariable Long id) {
-        try {
-
             //Optional ds is mainly used in case we don't have a movie with the id,it returns NULL
-
-
-            Optional<Movie> movie = movieService.getMovieById(id);
-            if (movie.isPresent()) {
-                return ResponseEntity.ok(movie.get());
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Movie with ID " + id + " not found.");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error fetching movie: " + e.getMessage());
-        }
+            return ResponseEntity.ok().body(movieService.getMovieResponseById(id));
     }
 
 
