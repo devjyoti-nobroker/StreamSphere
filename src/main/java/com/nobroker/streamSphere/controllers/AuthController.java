@@ -25,9 +25,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+
+
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
+
         String token = jwtUtil.generateToken(request.getEmail());
         return ResponseEntity.ok(new AuthResponse(token));
     }
