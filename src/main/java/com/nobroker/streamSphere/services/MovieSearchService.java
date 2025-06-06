@@ -153,7 +153,7 @@ public class MovieSearchService {
                 .completionSuggestion("suggest")
                 .prefix(prefix)
                 .skipDuplicates(true)
-                .size(10);
+                .size(5);
 
         SuggestBuilder suggestBuilder = new SuggestBuilder().addSuggestion("movie-suggest", suggestionBuilder);
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().suggest(suggestBuilder);
