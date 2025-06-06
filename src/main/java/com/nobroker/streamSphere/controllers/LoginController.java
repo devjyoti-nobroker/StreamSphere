@@ -1,8 +1,8 @@
 package com.nobroker.streamSphere.controllers;
 
+import com.nobroker.streamSphere.dtos.AuthRequestDTO;
+import com.nobroker.streamSphere.dtos.AuthResponseDTO;
 import com.nobroker.streamSphere.security.JwtUtil;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class LoginController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -24,7 +24,7 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<?> login(@RequestBody AuthRequestDTO request) {
 
 
         Authentication auth = authenticationManager.authenticate(
@@ -32,18 +32,6 @@ public class AuthController {
         );
 
         String token = jwtUtil.generateToken(request.getEmail());
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok(new AuthResponseDTO(token));
     }
-}
-
-@Data
-class AuthRequest {
-    private String email;
-    private String password;
-}
-
-@Data
-@AllArgsConstructor
-class AuthResponse {
-    private String token;
 }
