@@ -1,6 +1,9 @@
 package com.nobroker.streamSphere.services;
 
 import com.nobroker.streamSphere.dtos.MovieCardDTO;
+import com.nobroker.streamSphere.dtos.MovieRequestDTO;
+import com.nobroker.streamSphere.dtos.MovieResponseDTO;
+import com.nobroker.streamSphere.dtos.MovieSearchDTO;
 import com.nobroker.streamSphere.exception.MissingSearchParameterException;
 import com.nobroker.streamSphere.mappers.MovieMapper;
 import com.nobroker.streamSphere.models.MovieSearch;
@@ -69,7 +72,7 @@ public class MovieSearchService {
     }
 
 
-    public List<MovieCardDTO> searchByTextGenreAndRating(
+    public List<MovieSearchDTO> searchByTextGenreAndRating(
             String text,
             String genre,
             Float minRating,
@@ -133,10 +136,10 @@ public class MovieSearchService {
                 IndexCoordinates.of("movies")
         );
 
-        List<MovieCardDTO> resultList = new ArrayList<>();
+        List<MovieSearchDTO> resultList = new ArrayList<>();
         for (SearchHit<MovieSearch> hit : searchHits) {
-            MovieCardDTO movieCardDTO = movieMapper.toMovieDTO(hit.getContent());
-            resultList.add(movieCardDTO);
+            MovieSearchDTO movieSearchDTO = movieMapper.toMovieSearchDTO(hit.getContent());
+            resultList.add(movieSearchDTO);
         }
 
         return resultList;

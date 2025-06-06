@@ -29,4 +29,5 @@ public class MovieSearch {
     private String image;
     private String released;
     private Float rating;
+    private String runtime;
 }

@@ -22,4 +22,46 @@ fi
 
 # Create the index
 echo "🚀 Creating index '$INDEX_NAME'..."
-curl -X PUT "http://localhost:9200/movies" -H "Content-Type: application/json" -d "{\"settings\":{\"number_of_shards\":1,\"number_of_replicas\":1,\"analysis\":{\"analyzer\":{\"autocomplete\":{\"tokenizer\":\"edge_ngram_tokenizer\",\"filter\":[\"lowercase\"]}},\"tokenizer\":{\"edge_ngram_tokenizer\":{\"type\":\"edge_ngram\",\"min_gram\":2,\"max_gram\":20,\"token_chars\":[\"letter\",\"digit\"]}}}},\"mappings\":{\"properties\":{\"id\":{\"type\":\"long\"},\"title\":{\"type\":\"text\",\"analyzer\":\"autocomplete\",\"search_analyzer\":\"standard\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"genre\":{\"type\":\"keyword\"},\"actors\":{\"type\":\"keyword\"},\"description\":{\"type\":\"text\"},\"image\":{\"type\":\"text\",\"index\":false},\"released\":{\"type\":\"text\"},\"rating\":{\"type\":\"float\",\"index\":false},\"suggest\":{\"type\":\"completion\"}}}}" && echo "✅ Created index '$INDEX_NAME'"
+curl -X PUT "http://localhost:9200/movies" -H "Content-Type: application/json" -d '{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1,
+    "analysis": {
+      "analyzer": {
+        "autocomplete": {
+          "tokenizer": "edge_ngram_tokenizer",
+          "filter": ["lowercase"]
+        }
+      },
+      "tokenizer": {
+        "edge_ngram_tokenizer": {
+          "type": "edge_ngram",
+          "min_gram": 2,
+          "max_gram": 20,
+          "token_chars": ["letter", "digit"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "id": { "type": "long" },
+      "title": {
+        "type": "text",
+        "analyzer": "autocomplete",
+        "search_analyzer": "standard",
+        "fields": {
+          "keyword": { "type": "keyword", "ignore_above": 256 }
+        }
+      },
+      "genre": { "type": "keyword" },
+      "actors": { "type": "keyword" },
+      "description": { "type": "text" },
+      "image": { "type": "text", "index": false },
+      "released": { "type": "text" },
+      "rating": { "type": "float", "index": false },
+      "runtime": { "type": "text" },
+      "suggest": { "type": "completion" }
+    }
+  }
+}' && echo "✅ Created index '$INDEX_NAME'"

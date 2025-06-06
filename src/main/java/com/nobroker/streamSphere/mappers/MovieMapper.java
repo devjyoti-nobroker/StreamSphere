@@ -3,6 +3,7 @@ package com.nobroker.streamSphere.mappers;
 import com.nobroker.streamSphere.dtos.MovieCardDTO;
 import com.nobroker.streamSphere.dtos.MovieRequestDTO;
 import com.nobroker.streamSphere.dtos.MovieResponseDTO;
+import com.nobroker.streamSphere.dtos.MovieSearchDTO;
 import com.nobroker.streamSphere.models.Movie;
 import com.nobroker.streamSphere.models.MovieSearch;
 import com.nobroker.streamSphere.projection.MovieCardProjection;
@@ -45,7 +46,8 @@ public class MovieMapper {
                 movieRequest.getDescription(),
                 movieRequest.getMoviePoster(),
                 movieRequest.getReleaseDate().toString(),
-                movieRequest.getRating()
+                movieRequest.getRating(),
+                movieRequest.getRunTime()
         );
     }
 
@@ -75,6 +77,20 @@ public class MovieMapper {
                 Arrays.asList(movie.getActorList().split(",\\s*")),
                 movie.getMoviePoster(),
                 genre
+        );
+    }
+
+    public MovieSearchDTO toMovieSearchDTO(MovieSearch content) {
+        return new MovieSearchDTO(
+                content.getId(),
+                content.getTitle(),
+                content.getGenre(),
+                content.getActors(),
+                content.getDescription(),
+                content.getImage(),
+                content.getReleased(),
+                content.getRating(),
+                content.getRuntime()
         );
     }
 }

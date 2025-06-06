@@ -6,7 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -22,12 +25,10 @@ public class MovieSearchController {
             @RequestParam(value = "ratingMin", required = false) Float min,
             @RequestParam(value = "ratingMax", required = false) Float max
             ) throws IOException, ParseException {
-        return ResponseEntity.ok().body(movieSearchService.searchByTextGenreAndRating(text,genre,min,max));
-    }
-
-    @GetMapping("/suggestion")
-    public ResponseEntity<?> findSugestions(@RequestParam(value = "q") String text) throws IOException {
-        return ResponseEntity.ok().body(movieSearchService.autocomplete(text));
+        Map<String,Object> json = new HashMap<>();
+        json.put("suggestions",movieSearchService.autocomplete(text));
+        json.put("movies",movieSearchService.searchByTextGenreAndRating(text,genre,min,max));
+        return ResponseEntity.ok().body(json);
     }
 
     @GetMapping("/all")
