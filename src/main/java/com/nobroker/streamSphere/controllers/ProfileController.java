@@ -1,5 +1,6 @@
 package com.nobroker.streamSphere.controllers;
 
+import com.nobroker.streamSphere.dtos.AuthResponseDTO;
 import com.nobroker.streamSphere.dtos.ProfileDTO;
 import com.nobroker.streamSphere.security.JwtUtil;
 import com.nobroker.streamSphere.services.ProfileService;
@@ -32,7 +33,7 @@ public class ProfileController {
 
     // ✅ Updated to generate a new JWT with profileId + email
     @GetMapping("/{profileId}")
-    public ResponseEntity<AuthResponse> generateProfileToken(@PathVariable Long profileId) {
+    public ResponseEntity<AuthResponseDTO> generateProfileToken(@PathVariable Long profileId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // This will validate ownership internally
@@ -41,7 +42,7 @@ public class ProfileController {
         // Generate new JWT with email + profileId
         String newToken = jwtUtil.generateToken(email, profileId);
 
-        return ResponseEntity.ok(new AuthResponse(newToken));
+        return ResponseEntity.ok(new AuthResponseDTO(newToken));
     }
     @PutMapping("/{profileId}")
     public ResponseEntity<ProfileDTO> updateProfile(@PathVariable Long profileId, @RequestBody ProfileDTO profileDTO){
