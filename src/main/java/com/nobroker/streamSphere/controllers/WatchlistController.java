@@ -17,39 +17,39 @@ public class WatchlistController {
     private final WatchlistService watchlistService;
 
     // Add to watchlist
-    @PostMapping("/{profileId}/{movieId}")
+    @PostMapping("/{movieId}")
     public ResponseEntity<String> addToWatchlist(@PathVariable Long profileId, @PathVariable Long movieId) {
         watchlistService.addToWatchlist(profileId, movieId);
         return ResponseEntity.ok("Movie added to watchlist.");
     }
 
     // Get all movie IDs in watchlist
-    @GetMapping("/{profileId}")
+    @GetMapping("")
     public ResponseEntity<List<WatchlistDTO>> getWatchlist(@PathVariable Long profileId) {
         return ResponseEntity.ok(watchlistService.getWatchlistMovieIds(profileId));
     }
 
     // Remove movie from watchlist
-    @DeleteMapping("/{profileId}/{movieId}")
+    @DeleteMapping("{movieId}")
     public ResponseEntity<String> removeFromWatchlist(@PathVariable Long profileId, @PathVariable Long movieId) {
         watchlistService.removeFromWatchlist(profileId, movieId);
         return ResponseEntity.ok("Movie removed from watchlist.");
     }
 
     // Check if a movie is in watch history
-    @GetMapping("/{profileId}/check/{movieId}")
+    @GetMapping("/check/{movieId}")
     public ResponseEntity<Boolean> isWatched(@PathVariable Long profileId, @PathVariable Long movieId) {
         return ResponseEntity.ok(watchlistService.isInWatchlist(profileId, movieId));
     }
 
     // Get count of movies in watchlist
-    @GetMapping("/{profileId}/count")
+    @GetMapping("/count")
     public ResponseEntity<Long> getWatchlistCount(@PathVariable Long profileId) {
         return ResponseEntity.ok(watchlistService.getWatchlistCount(profileId));
     }
 
     // Clear entire watchlist
-    @DeleteMapping("/{profileId}")
+    @DeleteMapping("")
     public ResponseEntity<String> clearWatchlist(@PathVariable Long profileId) {
         watchlistService.clearWatchlist(profileId);
         return ResponseEntity.ok("Watchlist cleared.");

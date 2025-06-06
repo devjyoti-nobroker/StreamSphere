@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
-public class AccountController {
+public class RegisterController {
 
     @Autowired
     private AccountService accountService;

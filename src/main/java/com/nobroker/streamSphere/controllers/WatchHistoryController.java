@@ -17,26 +17,26 @@ public class WatchHistoryController {
     private final WatchHistoryService watchHistoryService;
 
     // Add to watch history
-    @PostMapping("/{profileId}/{movieId}")
+    @PostMapping("/{movieId}")
     public ResponseEntity<String> addToHistory(@PathVariable Long profileId, @PathVariable Long movieId) {
         watchHistoryService.addToHistory(profileId, movieId);
         return ResponseEntity.ok("Movie added to watch history.");
     }
 
     // Get full watch history for a profile
-    @GetMapping("/{profileId}")
+    @GetMapping("")
     public ResponseEntity<List<WatchHistoryDTO>> getWatchHistory(@PathVariable Long profileId) {
         return ResponseEntity.ok(watchHistoryService.getWatchHistoryByProfile(profileId));
     }
 
     // Check if a movie is in watch history
-    @GetMapping("/{profileId}/check/{movieId}")
+    @GetMapping("/check/{movieId}")
     public ResponseEntity<Boolean> isWatched(@PathVariable Long profileId, @PathVariable Long movieId) {
         return ResponseEntity.ok(watchHistoryService.isMovieWatched(profileId, movieId));
     }
 
     // Remove a movie from watch history
-    @DeleteMapping("/{profileId}/{movieId}")
+    @DeleteMapping("/{movieId}")
     public ResponseEntity<String> removeFromHistory(@PathVariable Long profileId, @PathVariable Long movieId) {
         watchHistoryService.removeFromHistory(profileId, movieId);
         return ResponseEntity.ok("Movie removed from watch history.");
