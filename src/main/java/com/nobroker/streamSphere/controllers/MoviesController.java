@@ -1,11 +1,14 @@
 package com.nobroker.streamSphere.controllers;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.nobroker.streamSphere.dtos.MovieRequestDTO;
 import com.nobroker.streamSphere.models.Movie;
 import com.nobroker.streamSphere.repositories.MovieGenreRepo;
 import com.nobroker.streamSphere.services.MovieGenreService;
 import com.nobroker.streamSphere.services.MovieService;
+import com.nobroker.streamSphere.services.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,23 +31,38 @@ public class MoviesController {
     @Autowired
     private MovieGenreService movieGenreService;
 
+    @Autowired
+    private RedisService redisService;
+
+
+    private static final String MOVIE_CACHE_KEY = "movies";
+
+
+
+//    public MoviesController(MovieService movieService, RedisService redisService) {
+//        this.movieService = movieService;
+//        this.redisService = redisService;
+//    }
 
 
     // To display all the movies (unsorted) (might be redundant)
 
     @GetMapping("/movies")
-    public ResponseEntity<?> getMovies() {
-        try {
-            // Ok
-            List<Movie> movies = movieService.getAllMovies();
-            return ResponseEntity.ok(movies);
 
-        } catch (Exception e) {
-            // Log the error if needed
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to fetch movies: " + e.getMessage());
+    public List<Movie> getMovies() {
+        List<Movie> cachedMovies = redisService.get(MOVIE_CACHE_KEY, new TypeReference<List<Movie>>() {});
+        if (cachedMovies != null) {
+            return cachedMovies;
         }
+
+        // 3. Else fetch from DB or service
+        List<Movie> movies = movieService.getAllMovies();
+
+        redisService.set(MOVIE_CACHE_KEY, movies, 3600L);
+
+        return movies;
     }
+
 
 
     //Get a particular movie by the id
