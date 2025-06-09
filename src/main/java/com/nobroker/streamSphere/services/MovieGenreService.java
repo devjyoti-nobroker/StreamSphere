@@ -7,6 +7,8 @@ import com.nobroker.streamSphere.repositories.MovieGenreRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,9 +22,10 @@ public class MovieGenreService {
     private MovieGenreRepo repo;
 
 
-    public List<MovieCardProjection> getMovieCardsByGenre(String genre) {
-        return repo.findMovieCardsByGenre(genre);
+    public Page<MovieCardProjection> getMovieCardsByGenre(String genre, Pageable pageable) {
+        return repo.findMovieCardsByGenre(genre, pageable);
     }
+
 
     public List<String> getGenresByMovieId(Long movieId) {
         return repo.findGenresByMovieId(movieId);

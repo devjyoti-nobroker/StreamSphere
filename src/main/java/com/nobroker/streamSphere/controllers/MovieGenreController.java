@@ -4,6 +4,9 @@ import com.nobroker.streamSphere.models.MovieGenre;
 import com.nobroker.streamSphere.projection.MovieCardProjection;
 import com.nobroker.streamSphere.services.MovieGenreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,25 +28,19 @@ public class MovieGenreController {
     //Gets all the movies for a particular genre
 
     @GetMapping("/movies/genre/{genre}")
-    public ResponseEntity<?> getMovieCardsByGenre(@PathVariable String genre) {
+    public ResponseEntity<?> getMovieCardsByGenre(
+            @PathVariable String genre,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MovieCardProjection> cards = genreService.getMovieCardsByGenre(genre, pageable);
 
-        try {
-
-
-            //Cards are mainly used to return those fields that are useful to show
-
-            List<MovieCardProjection> cards = genreService.getMovieCardsByGenre(genre);
-            System.out.println(cards.size());
-            return cards.isEmpty()
-                    ? ResponseEntity.noContent().build()
-                    : ResponseEntity.ok(cards);
-
-        } catch (Exception e) {
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to fetch movies by genre: " + e.getMessage());
-        }
+        return cards.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(cards);
     }
+
 
 
 

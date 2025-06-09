@@ -22,6 +22,7 @@ import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -71,12 +72,49 @@ public class MovieSearchService {
         return resultList;
     }
 
+    public boolean hasMore(String text, String genre, Float minRating, Float maxRating, int page, int size) {
+        Criteria titleCriteria = null;
+        if (text != null && !text.trim().isEmpty()) {
+            String[] words = text.trim().split("\\s+");
+            for (String word : words) {
+                Criteria wordCriteria = new Criteria("title").contains(word);
+                titleCriteria = titleCriteria == null ? wordCriteria : titleCriteria.and(wordCriteria);
+            }
+        }
+
+        Criteria genreCriteria = genre != null && !genre.isEmpty() ? new Criteria("genre").contains(genre) : null;
+        Criteria ratingCriteria = null;
+        if (minRating != null && maxRating != null) {
+            ratingCriteria = new Criteria("rating").between(minRating, maxRating);
+        } else if (minRating != null) {
+            ratingCriteria = new Criteria("rating").greaterThanEqual(minRating);
+        } else if (maxRating != null) {
+            ratingCriteria = new Criteria("rating").lessThanEqual(maxRating);
+        }
+
+        Criteria combined = titleCriteria;
+        if (genreCriteria != null) combined = combined == null ? genreCriteria : combined.and(genreCriteria);
+        if (ratingCriteria != null) combined = combined == null ? ratingCriteria : combined.and(ratingCriteria);
+
+        if (text != null && text.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            Criteria releaseCriteria = new Criteria("released").is(text);
+            combined = combined == null ? releaseCriteria : combined.or(releaseCriteria);
+        }
+
+        CriteriaQuery query = new CriteriaQuery(combined);
+        long total = elasticsearchOperations.count(query, MovieSearch.class, IndexCoordinates.of("movies"));
+        return total > page * size;
+    }
+
 
     public List<MovieSearchDTO> searchByTextGenreAndRating(
             String text,
             String genre,
             Float minRating,
-            Float maxRating) throws IOException, ParseException {
+            Float maxRating,
+            int page,
+            int size
+    ) throws IOException, ParseException {
 
         if(text==null && genre==null && minRating==null && maxRating==null){
             throw new MissingSearchParameterException("At least one search parameter (q, genre, ratingMin, ratingMax) must be provided");
@@ -128,7 +166,9 @@ public class MovieSearchService {
             combinedCriteria = combinedCriteria == null ? releaseCriteria : combinedCriteria.or(releaseCriteria);
         }
 
+        int from = (page - 1) * size;
         Query query = new CriteriaQuery(combinedCriteria);
+        query.setPageable(PageRequest.of(from / size, size));
 
         SearchHits<MovieSearch> searchHits = elasticsearchOperations.search(
                 query,
