@@ -94,7 +94,7 @@ public class MoviesController {
 
     // Sorted the movies according to release date descending
 
-    @GetMapping("/movies/sort/releaseDate/desc")
+    @GetMapping("/movies/recent")
     public List<Movie> getMoviesSortedByReleaseDateDesc() {
         List<Movie> sortedMovies = redisService.get(SORT_DATE_MOVIE_CACHE_KEY, new TypeReference<List<Movie>>() {});
         if(sortedMovies!=null) {
@@ -136,7 +136,7 @@ public class MoviesController {
 
     // Sorted the movies according to rating descending
 
-    @GetMapping("/movies/sort/rating/desc")
+    @GetMapping("/movies/popular")
     public List<Movie>  getMoviesSortedByRatingDesc() {
         List<Movie> sortedImdbMovies=redisService.get(SORT_IMDB_MOVIE_CACHE_KEY,new TypeReference<List<Movie>>() {});
        if(sortedImdbMovies!=null){
