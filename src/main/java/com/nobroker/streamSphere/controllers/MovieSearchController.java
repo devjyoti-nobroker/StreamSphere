@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,11 +24,14 @@ public class MovieSearchController {
             @RequestParam(value = "q", required = false) String text,
             @RequestParam(value = "genre", required = false) String genre,
             @RequestParam(value = "ratingMin", required = false) Float min,
-            @RequestParam(value = "ratingMax", required = false) Float max
-            ) throws IOException, ParseException {
-        Map<String,Object> json = new HashMap<>();
-        json.put("suggestions",movieSearchService.autocomplete(text));
-        json.put("movies",movieSearchService.searchByTextGenreAndRating(text,genre,min,max));
+            @RequestParam(value = "ratingMax", required = false) Float max,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size
+    ) throws IOException, ParseException {
+        Map<String, Object> json = new HashMap<>();
+        json.put("suggestions", page == 1 ? movieSearchService.autocomplete(text) : new ArrayList<>());
+        json.put("movies", movieSearchService.searchByTextGenreAndRating(text, genre, min, max, page, size));
+        json.put("hasMore", movieSearchService.hasMore(text, genre, min, max, page, size));
         return ResponseEntity.ok().body(json);
     }
 
