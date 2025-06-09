@@ -1,5 +1,6 @@
 package com.nobroker.streamSphere.controllers;
 
+import com.nobroker.streamSphere.models.Movie;
 import com.nobroker.streamSphere.models.MovieGenre;
 import com.nobroker.streamSphere.projection.MovieCardProjection;
 import com.nobroker.streamSphere.services.MovieGenreService;
@@ -34,7 +35,7 @@ public class MovieGenreController {
             @RequestParam(defaultValue = "20") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<MovieCardProjection> cards = genreService.getMovieCardsByGenre(genre, pageable);
+        Page<Movie> cards = genreService.getMovieCardsByGenre(genre, pageable);
 
         return cards.isEmpty()
                 ? ResponseEntity.noContent().build()

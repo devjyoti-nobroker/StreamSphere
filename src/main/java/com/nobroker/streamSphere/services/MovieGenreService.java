@@ -1,5 +1,6 @@
 package com.nobroker.streamSphere.services;
 
+import com.nobroker.streamSphere.models.Movie;
 import com.nobroker.streamSphere.models.MovieGenre;
 import com.nobroker.streamSphere.projection.MovieCardProjection;
 import com.nobroker.streamSphere.repositories.AccountRepo;
@@ -22,7 +23,7 @@ public class MovieGenreService {
     private MovieGenreRepo repo;
 
 
-    public Page<MovieCardProjection> getMovieCardsByGenre(String genre, Pageable pageable) {
+    public Page<Movie> getMovieCardsByGenre(String genre, Pageable pageable) {
         return repo.findMovieCardsByGenre(genre, pageable);
     }
 

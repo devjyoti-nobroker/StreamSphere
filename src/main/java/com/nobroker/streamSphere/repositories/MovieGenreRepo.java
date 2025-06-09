@@ -19,11 +19,7 @@ public interface MovieGenreRepo extends JpaRepository<MovieGenre, MovieGenre.Mov
 
     //Query is mainly written to join the Genre and movie table, and then we get only those columns that are required
     @Query(value = """
-    SELECT  m.id   AS movieId,
-            m.title AS movieName,
-            m.image AS moviePoster,
-            m.rating    AS rating,
-            m.released  AS releaseDate
+    SELECT  *
     FROM movies m
     INNER JOIN movie_genre mg ON mg.movie_id = m.id
     WHERE mg.genre = :genre
@@ -35,7 +31,7 @@ public interface MovieGenreRepo extends JpaRepository<MovieGenre, MovieGenre.Mov
     WHERE mg.genre = :genre
     """,
             nativeQuery = true)
-    Page<MovieCardProjection> findMovieCardsByGenre(@Param("genre") String genre, Pageable pageable);
+    Page<Movie> findMovieCardsByGenre(@Param("genre") String genre, Pageable pageable);
 
 
     //Query to get genres of a movie
