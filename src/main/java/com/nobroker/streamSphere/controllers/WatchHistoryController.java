@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/history")
@@ -25,10 +27,10 @@ public class WatchHistoryController {
 
     // Add to watch history
     @PostMapping("/{movieId}")
-    public ResponseEntity<String> addToHistory(@PathVariable Long movieId) {
+    public ResponseEntity<?> addToHistory(@PathVariable Long movieId) {
         Long profileId = userContext.getProfileId();
         watchHistoryService.addToHistory(profileId, movieId);
-        return ResponseEntity.ok("Movie added to watch history.");
+        return ResponseEntity.ok(convertToJson("Movie added to watch history."));
     }
 
     // Get full watch history for a profile
@@ -47,9 +49,17 @@ public class WatchHistoryController {
 
     // Remove a movie from watch history
     @DeleteMapping("/{movieId}")
-    public ResponseEntity<String> removeFromHistory(@PathVariable Long movieId) {
+    public ResponseEntity<?> removeFromHistory(@PathVariable Long movieId) {
         Long profileId = userContext.getProfileId();
         watchHistoryService.removeFromHistory(profileId, movieId);
-        return ResponseEntity.ok("Movie removed from watch history.");
+        Map<String,String> json = new HashMap<>();
+        json.put("alert","Movie added to watch history.");
+        return ResponseEntity.ok(convertToJson("Movie removed from watch history."));
+    }
+
+    private Map<String,String> convertToJson(String alert){
+        Map<String,String> json = new HashMap<>();
+        json.put("alert",alert);
+        return json;
     }
 }
