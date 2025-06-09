@@ -36,6 +36,10 @@ public class MoviesController {
 
 
     private static final String MOVIE_CACHE_KEY = "movies";
+    private static final String SORT_DATE_MOVIE_CACHE_KEY = "sortMovies";
+    private static final String SORT_IMDB_MOVIE_CACHE_KEY = "sortImdbMovies";
+
+
 
 
 
@@ -91,14 +95,29 @@ public class MoviesController {
     // Sorted the movies according to release date descending
 
     @GetMapping("/movies/sort/releaseDate/desc")
-    public ResponseEntity<?> getMoviesSortedByReleaseDateDesc() {
-        try {
-            List<Movie> movies = movieService.getMoviesSortedByReleaseDateDesc();
-            return ResponseEntity.ok(movies);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error fetching movies: " + e.getMessage());
+    public List<Movie> getMoviesSortedByReleaseDateDesc() {
+        List<Movie> sortedMovies = redisService.get(SORT_DATE_MOVIE_CACHE_KEY, new TypeReference<List<Movie>>() {});
+        if(sortedMovies!=null) {
+            return sortedMovies;
         }
+        List<Movie> sort_movies=movieService.getMoviesSortedByReleaseDateDesc();
+        redisService.set(SORT_DATE_MOVIE_CACHE_KEY,sort_movies,3600L);
+        return sort_movies;
+//        try {
+//            List<Movie> cachedMovies = redisService.get(SORT_DATE_MOVIE_CACHE_KEY, new TypeReference<List<Movie>>() {});
+//            if (cachedMovies != null) {
+//
+//                return ResponseEntity.ok(cachedMovies);
+//            }
+//
+//            List<Movie> sortedMovies = movieService.getMoviesSortedByReleaseDateDesc();
+//            redisService.set(SORT_DATE_MOVIE_CACHE_KEY, sortedMovies, 3600L); // cache for 1 hour
+//            return ResponseEntity.ok(sortedMovies);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Error fetching movies: " + e.getMessage());
+//        }
+
     }
 
 
@@ -118,14 +137,21 @@ public class MoviesController {
     // Sorted the movies according to rating descending
 
     @GetMapping("/movies/sort/rating/desc")
-    public ResponseEntity<?>getMoviesSortedByRatingDesc() {
-        try {
-            List <Movie> movies = movieService.getMoviesSortedByRatingDesc();
-            return ResponseEntity.ok(movies);
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error fetching movies: " + e.getMessage());
+    public List<Movie>  getMoviesSortedByRatingDesc() {
+        List<Movie> sortedImdbMovies=redisService.get(SORT_IMDB_MOVIE_CACHE_KEY,new TypeReference<List<Movie>>() {});
+       if(sortedImdbMovies!=null){
+            return sortedImdbMovies;
         }
+        List<Movie> sorted_Imdb_Movies=movieService.getMoviesSortedByRatingDesc();
+        redisService.set(SORT_IMDB_MOVIE_CACHE_KEY,sorted_Imdb_Movies,3600L);
+        return sorted_Imdb_Movies;
+//        try {
+//            List <Movie> movies = movieService.getMoviesSortedByRatingDesc();
+//            return ResponseEntity.ok(movies);
+//        }catch(Exception e){
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Error fetching movies: " + e.getMessage());
+//        }
     }
 
 
