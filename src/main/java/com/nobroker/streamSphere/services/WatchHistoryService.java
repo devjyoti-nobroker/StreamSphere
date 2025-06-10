@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class WatchHistoryService {
     private final WatchHistoryRepository watchHistoryRepository;
     private final ProfileRepo profileRepository;
     private final MoviesRepo movieRepository;
+    private final RedisService redisService;
 
     // Add a movie to watch history
     @Transactional
@@ -30,11 +32,10 @@ public class WatchHistoryService {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new ProfileNotFoundException(profileId));
 
-        Movie movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new MovieNotFoundException(movieId));
+        Movie movie = safelyFindMovie(movieId);
 
         WatchHistory history;
-
+        redisService.addMovie(profileId,movieId);
         if (watchHistoryRepository.existsByIdProfileIdAndIdMovieId(profileId, movieId)) {
             history = watchHistoryRepository.findByIdProfileIdAndIdMovieId(profileId, movieId).get();
             history.setWatchedAt(LocalDateTime.now());
@@ -71,6 +72,15 @@ public class WatchHistoryService {
         ).toList();
     }
 
+    public List<Movie> getRecentlyWatched(Long profileId){
+        List<Long> movieIds = redisService.getMovies(profileId);
+        return redisService
+                .getMovies(profileId)
+                .stream()
+                .map(this::safelyFindMovie)
+                .collect(Collectors.toList());
+    }
+
     // Check if a movie is in watch history
     public boolean isMovieWatched(Long profileId, Long movieId) {
         return watchHistoryRepository.existsByIdProfileIdAndIdMovieId(profileId, movieId);
@@ -80,5 +90,10 @@ public class WatchHistoryService {
     @Transactional
     public void removeFromHistory(Long profileId, Long movieId) {
         watchHistoryRepository.deleteByIdProfileIdAndIdMovieId(profileId, movieId);
+    }
+
+    private Movie safelyFindMovie(Long id){
+        return movieRepository.findById(id)
+                .orElseThrow(() -> new MovieNotFoundException(id));
     }
 }
