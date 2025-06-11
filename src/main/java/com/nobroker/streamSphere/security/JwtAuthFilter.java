@@ -35,7 +35,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private boolean isProfileOnlyRoute(HttpServletRequest request) {
         String path = request.getRequestURI();
         String method = request.getMethod();
-        return (path.equals("/api/profiles") && (method.equals("GET") || method.equals("POST"))) || (path.matches("^/api/profiles/\\d+$") && method.equals("GET") || method.equals("DELETE") || method.equals("PUT") );
+        return (path.equals("/api/profiles") && (method.equals("GET") || method.equals("POST"))) || (path.matches("^/api/profiles/\\d+$") && method.equals("GET") || method.equals("POST") || method.equals("DELETE") || method.equals("PUT") );
     }
 
     @Override
