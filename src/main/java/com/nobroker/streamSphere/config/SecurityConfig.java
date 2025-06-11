@@ -51,7 +51,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable) // ✅ new syntax
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/auth/login", "/api/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/captcha/generate").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login", "/api/register", "/captcha/validate").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/profiles").authenticated()                  // ✅ First-layer JWT
                         .requestMatchers(HttpMethod.POST, "/api/profiles").authenticated()                 // ✅ First-layer JWT
                         .requestMatchers(HttpMethod.GET, "/api/profiles/{profileId}").authenticated()      // ✅ First-layer JWT
