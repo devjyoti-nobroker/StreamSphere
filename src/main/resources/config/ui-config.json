@@ -1,0 +1,9 @@
+{
+  "homeComponents": {
+    "LatestRelease": { "enabled": true, "order": 3 },
+    "GenreList": { "enabled": true, "order": 5},
+    "Popular": { "enabled": true, "order": 1 },
+    "Trending": { "enabled": true, "order": 2 },
+    "Recommendation": { "enabled": true, "order": 4 }
+  }
+}
