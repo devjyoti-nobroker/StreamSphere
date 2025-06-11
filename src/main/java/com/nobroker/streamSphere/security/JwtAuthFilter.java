@@ -29,7 +29,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private boolean isPublicRoute(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.equals("/auth/login") || path.equals("/api/register");
+        String method = request.getMethod();
+        return path.equals("/auth/login") || path.equals("/api/register") || (path.equals("/captcha/validate") && method.equals("POST")) ||
+                (path.startsWith("/captcha/") && method.equals("GET"));
     }
 
     private boolean isProfileOnlyRoute(HttpServletRequest request) {
@@ -41,6 +43,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
+        String path = request.getRequestURI();
+        if (path.startsWith("/captcha/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         final String authHeader = request.getHeader("Authorization");
         System.out.println(authHeader);
