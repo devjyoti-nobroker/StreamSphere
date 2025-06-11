@@ -1,6 +1,8 @@
 package com.nobroker.streamSphere.repositories;
 
 import com.nobroker.streamSphere.models.Movie;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,12 +12,12 @@ import java.util.List;
 public interface MoviesRepo extends JpaRepository<Movie,Long> {
 
     // Sort by rating
-    List<Movie> findAllByOrderByRatingDesc();
-    List<Movie> findAllByOrderByRatingAsc();
+    Page<Movie> findAllByOrderByRatingDesc(Pageable pageable);
+    Page<Movie> findAllByOrderByRatingAsc(Pageable pageable);
 
     // Sort by release date
-    List<Movie> findAllByOrderByReleaseDateDesc();
-    List<Movie> findAllByOrderByReleaseDateAsc();
+    Page<Movie> findAllByOrderByReleaseDateDesc(Pageable pageable);
+    Page<Movie> findAllByOrderByReleaseDateAsc(Pageable pageable);
 
 
 
