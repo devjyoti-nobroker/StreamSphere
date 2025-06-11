@@ -12,6 +12,8 @@ import com.nobroker.streamSphere.repositories.MovieSearchRepository;
 import com.nobroker.streamSphere.repositories.MoviesRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,8 +36,8 @@ public class MovieService {
     @Autowired
     private MovieGenreService movieGenreService;
 
-    public List<Movie> getAllMovies() {
-        return moviesRepo.findAll();
+    public Page<Movie> getAllMovies(Pageable pageable) {
+        return moviesRepo.findAll(pageable);
     }
 
     public Optional<Movie> getMovieById(Long id) {
@@ -52,20 +54,20 @@ public class MovieService {
 
 
 
-    public List<Movie> getMoviesSortedByReleaseDateAsc() {
-        return moviesRepo.findAllByOrderByReleaseDateAsc();
+    public Page<Movie> getMoviesSortedByReleaseDateAsc(Pageable pageable) {
+        return moviesRepo.findAllByOrderByReleaseDateAsc(pageable);
     }
 
-    public List<Movie> getMoviesSortedByReleaseDateDesc() {
-        return moviesRepo.findAllByOrderByReleaseDateDesc();
+    public Page<Movie> getMoviesSortedByReleaseDateDesc(Pageable pageable) {
+        return moviesRepo.findAllByOrderByReleaseDateDesc(pageable);
     }
 
-    public List<Movie> getMoviesSortedByRatingAsc() {
-        return moviesRepo.findAllByOrderByRatingAsc();
+    public Page<Movie> getMoviesSortedByRatingAsc(Pageable pageable) {
+        return moviesRepo.findAllByOrderByRatingAsc(pageable);
     }
 
-    public List<Movie> getMoviesSortedByRatingDesc() {
-        return moviesRepo.findAllByOrderByRatingDesc();
+    public Page<Movie> getMoviesSortedByRatingDesc(Pageable pageable) {
+        return moviesRepo.findAllByOrderByRatingDesc(pageable);
     }
 
     @Transactional
