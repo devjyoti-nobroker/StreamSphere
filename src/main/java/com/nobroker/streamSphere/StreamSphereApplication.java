@@ -10,6 +10,5 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class StreamSphereApplication {
 
 	public static void main(String[] args) {SpringApplication.run(StreamSphereApplication.class, args);
-		System.out.println("mayank bhakat");
 	}
 }
